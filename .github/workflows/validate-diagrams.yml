@@ -115,12 +115,20 @@ jobs:
             
             Download the artifacts to preview the SVG files.`;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              if (error.status === 403) {
+                core.warning('Skipping PR comment: GITHUB_TOKEN cannot write issue comments in this run context.');
+              } else {
+                throw error;
+              }
+            }
       
       - name: Validate diagram accessibility
         run: |
