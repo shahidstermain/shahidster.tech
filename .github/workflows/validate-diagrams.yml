@@ -123,8 +123,10 @@ jobs:
                 body: comment
               });
             } catch (error) {
-              if (error.status === 403) {
-                core.warning('Skipping PR comment: GITHUB_TOKEN cannot write issue comments in this run context.');
+              if (error?.status === 403) {
+                const statusDetail = error?.status ? ` (status: ${error.status})` : '';
+                const messageDetail = error?.message ? `: ${error.message}` : '.';
+                core.warning(`Skipping PR comment: GITHUB_TOKEN cannot write issue comments in this run context${statusDetail}${messageDetail}`);
               } else {
                 throw error;
               }
