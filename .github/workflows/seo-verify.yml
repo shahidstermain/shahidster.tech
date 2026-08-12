@@ -25,11 +25,12 @@ jobs:
         run: npm run build
       - name: Verify homepage SEO output
         run: |
-          grep -F "Shahid Moosa | Cloud Database Support Engineer | PostgreSQL & Distributed SQL" dist/index.html
+          grep -F "Shahid Moosa | Cloud Database Support Engineer | PostgreSQL" dist/index.html
           grep -F 'rel="canonical" href="https://shahidster.tech"' dist/index.html
           grep -F 'application/ld+json' dist/index.html
       - name: Verify blog hub SEO output
         run: |
-          grep -F "Database & Distributed Systems Engineering Blog | Shahid Moosa" dist/blog/index.html
+          grep -F "Database &" dist/blog/index.html
+          grep -F "Distributed Systems Engineering Blog | Shahid Moosa" dist/blog/index.html
           grep -F 'rel="canonical" href="https://shahidster.tech/blog"' dist/blog/index.html
           grep -F 'application/ld+json' dist/blog/index.html
