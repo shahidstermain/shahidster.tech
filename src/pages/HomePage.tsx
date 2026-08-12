@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import {
     Mail, Linkedin, Github, Menu, X, Play, Pause, Volume2, ArrowRight,
-    Database, Cloud, Terminal, Shield, Lock, Server, CheckCircle
+    Database, Cloud, Terminal
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PILLAR_PAGE, CLUSTER_ARTICLES } from '../lib/blog-graph';
@@ -128,7 +128,7 @@ const TerminalWidget = () => {
 
 const HomePage = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [, setSelectedCategory] = useState('All');
 
     const scrollToSection = (id: string, category?: string) => {
         setIsMobileMenuOpen(false);
@@ -188,21 +188,21 @@ const HomePage = () => {
                         </div>
 
                         <p className="text-lg text-silver-gray max-w-xl leading-relaxed">
-                            Technical resource for engineers building high-performance distributed systems. Shared production briefings, architectural deep-dives, and incident reports.
+                            Cloud database and distributed SQL engineering focused on PostgreSQL, SingleStore, AWS, database reliability, query performance, replication, and production incident troubleshooting.
                         </p>
 
                         <div className="flex flex-wrap gap-4 pt-4">
                             <button onClick={() => scrollToSection('contact')} className="px-8 py-3.5 bg-linear-indigo hover:bg-linear-blue text-white font-semibold rounded-lg transition-all transform hover:-translate-y-0.5 shadow-[0_0_20px_rgba(94,106,210,0.3)]">
                                 Get in Touch
                             </button>
-                            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 bg-white/[0.02] text-luminous font-medium rounded-lg border border-white/10 hover:bg-white/[0.05] hover:border-white/20 transition-all">
-                                Download Resume
-                            </a>
+                            <Link to="/blog" className="px-8 py-3.5 bg-white/[0.02] text-luminous font-medium rounded-lg border border-white/10 hover:bg-white/[0.05] hover:border-white/20 transition-all">
+                                Read Engineering Blog
+                            </Link>
                         </div>
 
                         <div className="flex items-center gap-6 pt-6">
                             <div className="flex gap-5">
-                                <a href="https://github.com/shahidmoosa" target="_blank" rel="noopener noreferrer" className="text-silver-gray hover:text-luminous transition-colors" aria-label="Github Profile"><Github size={22} /></a>
+                                <a href="https://github.com/shahidstermain" target="_blank" rel="noopener noreferrer" className="text-silver-gray hover:text-luminous transition-colors" aria-label="Github Profile"><Github size={22} /></a>
                                 <a href="https://linkedin.com/in/shahidmoosa" target="_blank" rel="noopener noreferrer" className="text-silver-gray hover:text-luminous transition-colors" aria-label="LinkedIn Profile"><Linkedin size={22} /></a>
                                 <a href="mailto:connect2shahidmoosa@gmail.com" className="text-silver-gray hover:text-luminous transition-colors" aria-label="Email Me"><Mail size={22} /></a>
                             </div>
@@ -235,7 +235,7 @@ const HomePage = () => {
                             <h2 className="text-3xl font-medium text-luminous tracking-tight">About Me</h2>
                         </div>
                         <p className="text-lg text-silver-gray leading-loose">
-                            Dedicated <strong className="text-luminous font-medium">Cloud Database Support Engineer</strong> with a passion for ensuring data integrity, availability, and performance. Managing massive datasets and complex cloud environments.
+                            Dedicated <strong className="text-luminous font-medium">Cloud Database Support Engineer</strong> working across PostgreSQL, SingleStore, distributed systems, and AWS. I focus on database availability, SQL performance, replication, resource contention, and root-cause analysis for production incidents.
                         </p>
                     </div>
                 </div>
