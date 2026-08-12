@@ -26,24 +26,29 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Apply non-breaking npm audit fixes
+      - name: Upgrade markdown lint toolchain
+        run: npm install --save-dev markdownlint-cli@0.49.1
+
+      - name: Apply remaining non-breaking fixes
         run: npm audit fix || true
 
-      - name: Commit lockfile/package updates
+      - name: Commit dependency updates
         run: |
           if git diff --quiet -- package.json package-lock.json; then
-            echo "No dependency file changes produced by npm audit fix."
+            echo "No dependency file changes to commit."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add package.json package-lock.json
-            git commit -m "fix: remediate dependency vulnerabilities for #15"
+            git commit -m "fix: clear high-severity dependency audit findings for #15"
             git push
           fi
 
-      - name: Audit remaining high vulnerabilities
-        continue-on-error: true
+      - name: Enforce high-severity audit gate
         run: npm audit --audit-level=high
+
+      - name: Markdown lint verification
+        run: npm run lint-md
 
       - name: Build verification
         run: npm run build
