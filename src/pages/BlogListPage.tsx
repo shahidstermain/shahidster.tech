@@ -56,7 +56,11 @@ const BlogListPage: React.FC = () => {
                 title={seoMetadata.title}
                 description={seoMetadata.description}
                 url={seoMetadata.openGraph.url}
+                image={seoMetadata.openGraph.image}
+                imageAlt="Shahid Moosa engineering blog"
                 type={seoMetadata.openGraph.type as 'website' | 'article'}
+                siteName={seoMetadata.openGraph.siteName}
+                jsonLd={seoMetadata.jsonLd}
             />
 
             <div className="max-w-6xl mx-auto px-6 py-12">
@@ -65,12 +69,12 @@ const BlogListPage: React.FC = () => {
                     <div className="flex items-center gap-3 mb-4">
                         <BookOpen size={32} className="text-fuchsia-400" />
                         <h1 className="text-4xl md:text-5xl font-extrabold text-slate-100 tracking-tight">
-                            Engineering Logs
+                            Database & Distributed Systems Engineering Logs
                         </h1>
                     </div>
                     <p className="text-xl text-slate-400 max-w-3xl">
-                        Deep dives into distributed systems, database reliability, and cloud architecture.
-                        Technical notes from production—no fluff, just engineering.
+                        Deep dives into PostgreSQL, distributed SQL, database reliability, query performance,
+                        replication, cloud infrastructure, and production incident troubleshooting.
                     </p>
                 </header>
 

@@ -28,18 +28,20 @@ interface SEOMetadata {
         section: string;
         tags: string[];
     };
-    jsonLd: any;
+    jsonLd: unknown;
 }
 
+const DEFAULT_SOCIAL_IMAGE = '/shahid-moosa.jpg';
+
 /**
- * Generate comprehensive SEO metadata for a blog post
+ * Generate comprehensive SEO metadata for a blog post.
  */
 export function generateBlogPostSEO(
     post: BlogPost,
     baseUrl: string = 'https://shahidster.tech'
 ): SEOMetadata {
     const postUrl = `${baseUrl}/blog/${post.slug}`;
-    const imageUrl = post.image ? `${baseUrl}${post.image}` : `${baseUrl}/og-default.png`;
+    const imageUrl = post.image ? `${baseUrl}${post.image}` : `${baseUrl}${DEFAULT_SOCIAL_IMAGE}`;
 
     return {
         title: `${post.title} | Shahid Moosa`,
@@ -113,29 +115,32 @@ export function generateBlogPostSEO(
 }
 
 /**
- * Generate SEO metadata for blog list page
+ * Generate SEO metadata for blog list page.
  */
 export function generateBlogListSEO(baseUrl: string = 'https://shahidster.tech'): SEOMetadata {
     const blogUrl = `${baseUrl}/blog`;
+    const imageUrl = `${baseUrl}${DEFAULT_SOCIAL_IMAGE}`;
 
     return {
-        title: 'Engineering Blog | Shahid Moosa',
-        description: 'Deep dives into distributed systems, database reliability, and cloud architecture. Technical insights from production environments.',
+        title: 'Database & Distributed Systems Engineering Blog | Shahid Moosa',
+        description: 'Technical deep dives into PostgreSQL, distributed SQL, database reliability, SQL performance, replication, cloud infrastructure, and production incident troubleshooting.',
         canonical: blogUrl,
 
         openGraph: {
             type: 'website',
-            title: 'Engineering Blog | Shahid Moosa',
-            description: 'Deep dives into distributed systems, database reliability, and cloud architecture.',
+            title: 'Database & Distributed Systems Engineering Blog | Shahid Moosa',
+            description: 'Technical deep dives into PostgreSQL, distributed SQL, database reliability, cloud infrastructure, and production troubleshooting.',
             url: blogUrl,
+            image: imageUrl,
             siteName: 'Shahid Moosa - Engineering Blog',
             locale: 'en_US',
         },
 
         twitter: {
-            card: 'summary',
-            title: 'Engineering Blog | Shahid Moosa',
-            description: 'Deep dives into distributed systems, database reliability, and cloud architecture.',
+            card: 'summary_large_image',
+            title: 'Database & Distributed Systems Engineering Blog | Shahid Moosa',
+            description: 'Technical deep dives into PostgreSQL, distributed SQL, database reliability, cloud infrastructure, and production troubleshooting.',
+            image: imageUrl,
             creator: '@shahidmoosa',
             site: '@shahidmoosa',
         },
@@ -145,8 +150,9 @@ export function generateBlogListSEO(baseUrl: string = 'https://shahidster.tech')
             '@type': 'Blog',
             '@id': blogUrl,
             name: 'Shahid Moosa - Engineering Blog',
-            description: 'Technical blog about distributed systems, databases, and cloud infrastructure',
+            description: 'Technical blog about PostgreSQL, distributed SQL, database reliability, cloud infrastructure, and production troubleshooting.',
             url: blogUrl,
+            image: imageUrl,
             author: {
                 '@type': 'Person',
                 name: 'Shahid Moosa',
@@ -159,7 +165,7 @@ export function generateBlogListSEO(baseUrl: string = 'https://shahidster.tech')
 }
 
 /**
- * Generate HTML meta tags from SEO metadata
+ * Generate HTML meta tags from SEO metadata.
  */
 export function generateMetaTags(seo: SEOMetadata): string {
     const tags: string[] = [];
@@ -209,7 +215,7 @@ export function generateMetaTags(seo: SEOMetadata): string {
 }
 
 /**
- * Generate JSON-LD script tag
+ * Generate JSON-LD script tag.
  */
 export function generateJsonLdScript(seo: SEOMetadata): string {
     return `<script type="application/ld+json">
