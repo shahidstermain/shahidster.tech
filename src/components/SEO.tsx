@@ -86,7 +86,7 @@ const SEO: React.FC<SEOProps> = ({
             )}
 
             {/* Structured Data */}
-            {jsonLd && (
+            {jsonLd != null && (
                 <script type="application/ld+json">
                     {JSON.stringify(jsonLd)}
                 </script>
