@@ -1,4 +1,4 @@
-name: Build Hostinger production branch
+name: Build canonical portfolio for Hostinger
 
 on:
   push:
@@ -15,36 +15,57 @@ concurrency:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
     steps:
-      - name: Checkout source
+      - name: Checkout deployment repository
         uses: actions/checkout@v4
+
+      - name: Checkout canonical portfolio source
+        shell: bash
+        run: |
+          rm -rf canonical-source
+          git clone --depth 1 https://github.com/shahidstermain/shahid-s-signature-site.git canonical-source
+          echo "SOURCE_SHA=$(git -C canonical-source rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 22
           cache: npm
+          cache-dependency-path: canonical-source/package-lock.json
 
-      - name: Install dependencies
+      - name: Install canonical dependencies
+        working-directory: canonical-source
         run: npm ci
 
-      - name: Build production site
+      - name: Build canonical production site
+        working-directory: canonical-source
         run: npm run build
 
-      - name: Verify production output
-        run: test -f dist/index.html
+      - name: Preserve Hostinger Apache routing
+        run: cp canonical-source/public/.htaccess canonical-source/dist/.htaccess
 
-      - name: Publish dist to hostinger-deploy branch
+      - name: Verify production output
+        shell: bash
+        run: |
+          test -f canonical-source/dist/index.html
+          test -f canonical-source/dist/.htaccess
+          test -f canonical-source/dist/robots.txt
+
+      - name: Publish canonical build to Hostinger branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          cd dist
+          cd canonical-source/dist
           git init
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b hostinger-deploy
           git add -A
-          git commit -m "Deploy ${GITHUB_SHA}"
+          git commit -m "Deploy shahid-s-signature-site ${SOURCE_SHA}"
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin hostinger-deploy
