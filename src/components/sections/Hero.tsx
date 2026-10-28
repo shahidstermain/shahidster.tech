@@ -135,68 +135,88 @@ export const Hero = () => {
 
           {/* Right Column — Bento Terminal & Profile Console (5 cols) */}
           <div className="lg:col-span-5 flex flex-col gap-4">
-            {/* Live Interactive Terminal */}
-            <LiveTerminal />
-
-            {/* Verified Profile Card */}
+            {/* Verified Profile Card with Prominent Headshot */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="p-4 rounded-xl border border-border/50 bg-card/40 backdrop-blur-md flex items-center justify-between gap-4"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="p-5 rounded-2xl border border-border/50 bg-card/40 backdrop-blur-md shadow-card hover:border-primary/40 transition-all duration-300"
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-5">
+                {/* Headshot with ambient glow matching the image halo */}
                 <div className="relative shrink-0">
+                  <div 
+                    className="absolute -inset-1 rounded-2xl blur-md opacity-40 pointer-events-none"
+                    style={{
+                      background: "radial-gradient(circle, hsl(var(--primary) / 0.5) 0%, transparent 70%)"
+                    }}
+                  />
                   <img
                     src={shahidPhoto}
                     alt="Shahid Moosa"
-                    className="w-12 h-12 rounded-xl object-cover border border-border/60"
-                    width={48}
-                    height={48}
+                    className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border border-border/60 shadow-xl"
+                    width={112}
+                    height={112}
+                    loading="eager"
                   />
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background" />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-background animate-pulse" />
                 </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 font-medium text-sm text-foreground truncate">
-                    <span>Shahid Moosa</span>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
-                  </div>
-                  <div className="text-xs text-muted-foreground flex items-center gap-1 truncate">
-                    <MapPin className="w-3 h-3 shrink-0" />
-                    <span>Bengaluru, India · SingleStore</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* Quick Social Buttons */}
-              <div className="flex items-center gap-1.5 shrink-0">
-                <a
-                  href="https://github.com/shahidmoosa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg border border-border/60 bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
-                  aria-label="GitHub"
-                >
-                  <Github className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://linkedin.com/in/shahidmoosa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg border border-border/60 bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="mailto:connect2shahidmoosa@gmail.com"
-                  className="p-2 rounded-lg border border-border/60 bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
-                  aria-label="Email"
-                >
-                  <Mail className="w-4 h-4" />
-                </a>
+                {/* Profile Details */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="font-heading font-semibold text-lg text-foreground truncate">
+                      Shahid Moosa
+                    </h2>
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground font-medium mb-1 truncate">
+                    Cloud Database Support Engineer
+                  </p>
+
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
+                    <MapPin className="w-3.5 h-3.5 text-primary/80 shrink-0" />
+                    <span className="truncate">Bengaluru, India · SingleStore</span>
+                  </div>
+
+                  {/* Quick Social & Direct Contact Links */}
+                  <div className="flex items-center gap-2">
+                    <a
+                      href="https://github.com/shahidmoosa"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg border border-border/60 bg-secondary/50 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                      aria-label="GitHub"
+                    >
+                      <Github className="w-3.5 h-3.5" />
+                    </a>
+                    <a
+                      href="https://linkedin.com/in/shahidmoosa"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-lg border border-border/60 bg-secondary/50 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                      aria-label="LinkedIn"
+                    >
+                      <Linkedin className="w-3.5 h-3.5" />
+                    </a>
+                    <a
+                      href="mailto:connect2shahidmoosa@gmail.com"
+                      className="p-1.5 rounded-lg border border-border/60 bg-secondary/50 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                      aria-label="Email"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                    </a>
+                    <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md ml-auto">
+                      Available
+                    </span>
+                  </div>
+                </div>
               </div>
             </motion.div>
+
+            {/* Live Interactive Terminal */}
+            <LiveTerminal />
           </div>
         </div>
       </div>

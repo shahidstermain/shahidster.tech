@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/button";
 import { Mail, ArrowRight, Github, Linkedin, FileText, Check, Copy } from "lucide-react";
+import shahidPhoto from "@/assets/shahid-moosa.jpg";
 
 export const Connect = () => {
   const [copied, setCopied] = useState(false);
@@ -17,13 +18,37 @@ export const Connect = () => {
   return (
     <Section id="connect" className="relative">
       <div className="max-w-3xl mx-auto text-center">
+        {/* Friendly Profile Avatar */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6"
+        >
+          <div 
+            className="absolute -inset-1 rounded-full blur-md opacity-50 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)"
+            }}
+          />
+          <img
+            src={shahidPhoto}
+            alt="Shahid Moosa"
+            className="relative w-full h-full rounded-full object-cover border-2 border-border/80 shadow-2xl"
+            width={96}
+            height={96}
+          />
+          <div className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background animate-pulse" />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
         >
-          <span className="text-primary font-mono text-xs tracking-widest uppercase mb-4 block font-semibold">
+          <span className="text-primary font-mono text-xs tracking-widest uppercase mb-3 block font-semibold">
             Connect
           </span>
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-semibold mb-6 leading-tight text-foreground">

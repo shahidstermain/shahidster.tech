@@ -30,7 +30,7 @@ const Index = () => {
         "https://twitter.com/shahidster_"
       ],
       "description": "Distributed Systems Engineer specializing in cloud databases, high-scale query optimization, and reliable infrastructure.",
-      "image": "https://shahidster.tech/assets/shahid-moosa.jpg"
+      "image": "https://shahidster.tech/shahid-moosa.jpg"
     };
 
     const script = document.createElement('script');
