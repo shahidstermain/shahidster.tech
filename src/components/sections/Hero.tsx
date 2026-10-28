@@ -1,119 +1,97 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail, FileDown, GraduationCap } from "lucide-react";
+import { ArrowRight, ArrowDown, Github, Linkedin, Mail, FileDown, GraduationCap, MapPin, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LiveTerminal } from "@/components/ui/LiveTerminal";
 import shahidPhoto from "@/assets/shahid-moosa.jpg";
 import singlestoreLogo from "@/assets/logos/singlestore.svg";
 
-// SingleStore brand color
-const SINGLESTORE_PURPLE = "#AA8CFF";
-
 export const Hero = () => {
   return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden py-20">
-      {/* Ambient glow effect */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-glow-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-glow-pulse" style={{ animationDelay: "1.5s" }} />
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden py-24 md:py-32">
+      {/* Restrained single-accent ambient lighting */}
+      <div 
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full pointer-events-none blur-3xl opacity-20"
+        style={{
+          background: "radial-gradient(circle, hsl(var(--primary) / 0.15) 0%, transparent 70%)"
+        }}
+      />
       
       <div className="section-container relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left side - Content */}
-          <div className="order-2 lg:order-1">
-            {/* Status badge */}
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-12 items-center">
+          {/* Left Column — Editorial Narrative (7 cols) */}
+          <div className="lg:col-span-7">
+            {/* Status Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-border/60 bg-card/40 backdrop-blur-md mb-6"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-xs font-mono text-muted-foreground">
+                Cloud Database Support Engineer
+              </span>
+            </motion.div>
+
+            {/* Main Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.08 }}
+              className="font-heading text-4xl sm:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.08] mb-6 text-foreground"
+            >
+              I keep distributed databases{" "}
+              <span className="text-gradient">alive at scale.</span>
+            </motion.h1>
+
+            {/* Subheading */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.16 }}
+              className="mb-8"
+            >
+              <p className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
+                Database Cloud Support Engineer at{" "}
+                <a
+                  href="https://www.singlestore.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground font-medium inline-flex items-center gap-1.5 hover:text-primary transition-colors underline decoration-border/80 underline-offset-4"
+                >
+                  <img src={singlestoreLogo} alt="SingleStore" className="w-4 h-4 inline-block" />
+                  SingleStore
+                </a>
+                . Troubleshooting distributed columnar clusters, query plan bottlenecks, and high-severity incidents across AWS, Azure, and hybrid deployments.
+              </p>
+            </motion.div>
+
+            {/* Focused 2-Tier CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-card/50 backdrop-blur-sm mb-8"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-sm text-muted-foreground">Active now</span>
-            </motion.div>
-
-            {/* Main heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-bold leading-[1.1] mb-6"
-            >
-              I keep databases alive
-              <br />
-              <span className="text-gradient">at scale.</span>
-            </motion.h1>
-
-            {/* Subheading with SingleStore branding */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-8"
-            >
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mb-4">
-                Cloud Database Support Engineer at
-              </p>
-              <a 
-                href="https://www.singlestore.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-300 hover:scale-105 group"
-                style={{
-                  backgroundColor: "rgba(170, 140, 255, 0.1)",
-                  borderColor: "rgba(170, 140, 255, 0.3)",
-                  boxShadow: "0 0 20px rgba(170, 140, 255, 0.15)",
-                }}
-              >
-                <img src={singlestoreLogo} alt="SingleStore" className="w-6 h-6" loading="lazy" />
-                <span 
-                  className="font-semibold text-lg"
-                  style={{ color: SINGLESTORE_PURPLE }}
-                >
-                  SingleStore
-                </span>
-              </a>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed mt-4">
-                I troubleshoot distributed databases across cloud environments with a focus on incident response, root-cause analysis, and performance tuning.
-              </p>
-            </motion.div>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 mb-8"
+              transition={{ duration: 0.5, delay: 0.24 }}
+              className="flex flex-wrap items-center gap-3 mb-10"
             >
               <Button
                 size="lg"
-                className="font-medium px-8 h-12 text-base gap-2"
+                className="font-medium px-6 h-12 text-sm gap-2"
                 asChild
               >
                 <Link to="/course">
                   <GraduationCap className="w-4 h-4" />
                   Start Database 201
+                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </Link>
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="font-medium px-8 h-12 text-base"
-                onClick={() => document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Let's talk
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="lg" 
-                className="font-medium px-8 h-12 text-base"
-                onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                See my work
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="lg" 
-                className="font-medium px-8 h-12 text-base gap-2"
+                className="font-medium px-6 h-12 text-sm gap-2 border-border/80 bg-card/30 hover:bg-card/70"
                 asChild
               >
                 <a href="/resume.pdf" download="Shahid_Moosa_Resume.pdf">
@@ -121,113 +99,120 @@ export const Hero = () => {
                   Resume
                 </a>
               </Button>
+              <Button 
+                variant="ghost" 
+                size="lg" 
+                className="font-medium px-4 h-12 text-sm text-muted-foreground hover:text-foreground"
+                onClick={() => document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Let's talk
+              </Button>
             </motion.div>
 
-            {/* Social links */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex items-center gap-4 mb-8"
-            >
-              <a
-                href="https://github.com/shahidmoosa"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors duration-300"
-                aria-label="GitHub"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com/in/shahidmoosa"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors duration-300"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="mailto:connect2shahidmoosa@gmail.com"
-                className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors duration-300"
-                aria-label="Email"
-              >
-                <Mail className="w-5 h-5" />
-              </a>
-            </motion.div>
-
-            {/* Impact stats */}
+            {/* Impact Metrics (Strict 8px Spatial Grid) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="grid grid-cols-2 gap-3 max-w-sm"
+              transition={{ duration: 0.5, delay: 0.32 }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl pt-6 border-t border-border/40"
             >
               {[
-                { value: "5+ yrs", label: "Support experience" },
-                { value: "Tier-2/3", label: "Incident support" },
-                { value: "AWS + Azure", label: "Cloud platforms" },
-                { value: "SQL + NoSQL", label: "Database focus" },
+                { value: "5+ Yrs", label: "Production Support" },
+                { value: "Tier-2/3", label: "Incident Escalations" },
+                { value: "Distributed", label: "SingleStore & AWS" },
+                { value: "16 Lessons", label: "Free Course Content" },
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="p-3 rounded-lg border border-border/50 bg-card/40"
+                  className="p-3.5 rounded-xl border border-border/40 bg-card/30 backdrop-blur-sm"
                 >
-                  <div className="text-lg font-bold text-foreground">{stat.value}</div>
-                  <div className="text-xs text-muted-foreground">{stat.label}</div>
+                  <div className="text-base font-bold font-mono text-foreground">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Right side - Photo and Terminal */}
-          <div className="order-1 lg:order-2 flex flex-col items-center gap-8">
-            {/* Profile photo with glow ring */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative"
-            >
-              {/* Outer glow ring */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary via-primary/50 to-primary rounded-full blur-md opacity-60 animate-pulse" />
-              
-              {/* Photo container */}
-              <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full overflow-hidden border-2 border-primary/30">
-                <img
-                  src={shahidPhoto}
-                  alt="Shahid Moosa"
-                  className="w-full h-full object-cover"
-                  width={256}
-                  height={256}
-                  fetchpriority="high"
-                  decoding="async"
-                />
-              </div>
-              
-              {/* Active indicator */}
-              <div className="absolute bottom-4 right-4 w-5 h-5 bg-emerald-500 rounded-full border-4 border-background animate-pulse" />
-            </motion.div>
-
-            {/* Live Terminal */}
+          {/* Right Column — Bento Terminal & Profile Console (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            {/* Live Interactive Terminal */}
             <LiveTerminal />
+
+            {/* Verified Profile Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="p-4 rounded-xl border border-border/50 bg-card/40 backdrop-blur-md flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative shrink-0">
+                  <img
+                    src={shahidPhoto}
+                    alt="Shahid Moosa"
+                    className="w-12 h-12 rounded-xl object-cover border border-border/60"
+                    width={48}
+                    height={48}
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 font-medium text-sm text-foreground truncate">
+                    <span>Shahid Moosa</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                  </div>
+                  <div className="text-xs text-muted-foreground flex items-center gap-1 truncate">
+                    <MapPin className="w-3 h-3 shrink-0" />
+                    <span>Bengaluru, India · SingleStore</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Social Buttons */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href="https://github.com/shahidmoosa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg border border-border/60 bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                  aria-label="GitHub"
+                >
+                  <Github className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://linkedin.com/in/shahidmoosa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg border border-border/60 bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+                <a
+                  href="mailto:connect2shahidmoosa@gmail.com"
+                  className="p-2 rounded-lg border border-border/60 bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                  aria-label="Email"
+                >
+                  <Mail className="w-4 h-4" />
+                </a>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Subtle Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:block"
       >
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ArrowDown className="w-5 h-5 text-muted-foreground" />
+          <ArrowDown className="w-4 h-4 text-muted-foreground/60" />
         </motion.div>
       </motion.div>
     </section>

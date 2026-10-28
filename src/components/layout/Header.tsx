@@ -62,7 +62,7 @@ export const Header = () => {
             </a>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
                 <button
                   key={link.href}
@@ -87,19 +87,14 @@ export const Header = () => {
                   <Shield className="w-3.5 h-3.5" /> Admin
                 </Link>
               )}
-              {user ? (
+              {user && (
                 <Button size="sm" variant="ghost" onClick={() => signOut()}>
                   <LogOut className="w-4 h-4 mr-1" /> Sign out
-                </Button>
-              ) : (
-                <Button size="sm" variant="ghost" asChild>
-                  <Link to="/auth">
-                    <UserIcon className="w-4 h-4 mr-1" /> Sign in
-                  </Link>
                 </Button>
               )}
               <Button
                 size="sm"
+                className="font-medium text-xs px-4"
                 onClick={() => scrollToSection("#connect")}
               >
                 Get in touch
@@ -159,21 +154,13 @@ export const Header = () => {
                     <Shield className="w-5 h-5" /> Admin
                   </Link>
                 )}
-                {user ? (
+                {user && (
                   <button
                     onClick={() => { signOut(); setIsMobileMenuOpen(false); }}
                     className="text-2xl font-heading font-medium text-left text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
                   >
                     <LogOut className="w-5 h-5" /> Sign out
                   </button>
-                ) : (
-                  <Link
-                    to="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-2xl font-heading font-medium text-left text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-                  >
-                    <UserIcon className="w-5 h-5" /> Sign in
-                  </Link>
                 )}
                 <Button
                   size="lg"

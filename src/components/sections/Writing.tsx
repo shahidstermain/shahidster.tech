@@ -112,7 +112,7 @@ export const Writing = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search all 15 articles by topic (e.g. SingleStore, CAP, OOM, Latency, Sharding)..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-card/60 backdrop-blur-sm text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>
 
@@ -127,14 +127,14 @@ export const Writing = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`text-xs px-3.5 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 font-medium ${
+                className={`text-xs px-3.5 py-1.5 rounded-lg transition-all duration-200 flex items-center gap-1.5 font-medium ${
                   isSelected
                     ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-card/60 text-muted-foreground border border-border/60 hover:border-primary/40 hover:text-foreground"
+                    : "bg-card/40 text-muted-foreground border border-border/50 hover:border-primary/40 hover:text-foreground"
                 }`}
               >
                 <span>{category}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? "bg-black/20 text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${isSelected ? "bg-black/20 text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
                   {count}
                 </span>
               </button>
@@ -148,15 +148,34 @@ export const Writing = () => {
         <span>
           Showing {filteredArticles.length} of {visibleArticles.length} articles
         </span>
-        {searchQuery && (
+        {(searchQuery || selectedCategory !== "All") && (
           <button
             onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
-            className="text-primary hover:underline"
+            className="text-primary hover:underline font-medium"
           >
             Clear filters
           </button>
         )}
       </div>
+
+      {/* Empty State when no results found */}
+      {filteredArticles.length === 0 && (
+        <div className="text-center py-16 px-4 rounded-xl border border-dashed border-border/60 bg-card/20 mb-8">
+          <div className="w-12 h-12 rounded-xl bg-muted/40 flex items-center justify-center mx-auto mb-4 text-muted-foreground">
+            <Search className="w-5 h-5 text-primary" />
+          </div>
+          <h3 className="font-heading text-lg font-semibold mb-1 text-foreground">No matching articles found</h3>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-6">
+            We couldn't find any articles matching your search criteria. Try a different term like &quot;SingleStore&quot;, &quot;Aurora&quot;, or &quot;Replication&quot;.
+          </p>
+          <button
+            onClick={() => { setSearchQuery(""); setSelectedCategory("All"); }}
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+          >
+            Reset all filters
+          </button>
+        </div>
+      )}
 
       {/* Articles Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -170,26 +189,26 @@ export const Writing = () => {
           >
             <Link
               to={`/blog/${article.slug}`}
-              className="group relative flex flex-col justify-between h-full card-elevated p-6 transition-all duration-300 hover:border-primary/40 hover:-translate-y-1"
+              className="group relative flex flex-col justify-between h-full rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-6 transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 shadow-card"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-3.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                    <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
                       {article.category}
                     </span>
                     {article.featured && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 inline-flex items-center gap-1">
+                      <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1">
                         <Sparkles className="w-2.5 h-2.5" /> Featured
                       </span>
                     )}
                     {isPremiumSlug(article.slug) && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-500 border border-amber-500/30 inline-flex items-center gap-1">
+                      <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 border border-amber-500/20 inline-flex items-center gap-1">
                         <Lock className="w-2.5 h-2.5" /> Premium
                       </span>
                     )}
                     {isAdmin && metaMap[article.slug] && !metaMap[article.slug].published && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border">
+                      <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-muted text-muted-foreground border border-border">
                         Draft
                       </span>
                     )}
@@ -197,7 +216,7 @@ export const Writing = () => {
                   <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                 </div>
 
-                <h3 className="font-heading text-lg font-semibold mb-2.5 leading-snug group-hover:text-primary transition-colors">
+                <h3 className="font-heading text-lg font-semibold mb-2.5 leading-snug group-hover:text-primary transition-colors text-foreground">
                   {article.title}
                 </h3>
 
@@ -206,7 +225,7 @@ export const Writing = () => {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 text-[11px] text-muted-foreground pt-3 border-t border-border/40 mt-auto">
+              <div className="flex items-center gap-3 text-[11px] font-mono text-muted-foreground pt-3 border-t border-border/40 mt-auto">
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3 text-primary/70" />
                   {article.readTime}

@@ -41,16 +41,16 @@ export const Philosophy = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="card-elevated p-8 group hover:border-primary/30 transition-colors duration-300"
+            transition={{ duration: 0.5, delay: index * 0.08 }}
+            className="p-6 sm:p-8 rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm group hover:border-primary/40 transition-all duration-300 shadow-card"
           >
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors duration-300">
-              <principle.icon className="w-6 h-6 text-primary" />
+            <div className="w-11 h-11 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
+              <principle.icon className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="font-heading text-xl font-semibold mb-3">
+            <h3 className="font-heading text-lg sm:text-xl font-semibold mb-2.5 text-foreground group-hover:text-primary transition-colors">
               {principle.title}
             </h3>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {principle.description}
             </p>
           </motion.div>

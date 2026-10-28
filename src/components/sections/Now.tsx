@@ -54,18 +54,16 @@ export const Now = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-            className="relative group"
+            transition={{ duration: 0.4, delay: index * 0.08 }}
+            className="p-6 rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm h-full hover:border-primary/40 transition-all duration-300 shadow-card group"
           >
-            <div className="card-elevated p-6 h-full hover:border-primary/30 transition-colors duration-300">
-              <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center mb-4">
-                <item.icon className="w-5 h-5 text-primary" />
-              </div>
-              <h3 className="font-heading font-semibold mb-2">{item.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
+            <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+              <item.icon className="w-5 h-5 text-primary" />
             </div>
+            <h3 className="font-heading font-semibold text-base text-foreground mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {item.description}
+            </p>
           </motion.div>
         ))}
       </div>
@@ -76,14 +74,14 @@ export const Now = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-10 p-6 rounded-xl border border-border/50 bg-card/30"
+        className="mt-8 p-6 rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm"
       >
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Beyond the screen</p>
+        <p className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground mb-4">Beyond the Terminal</p>
         <div className="flex flex-wrap gap-4">
           {beyondWorkItems.map((item) => (
-            <span key={item.label} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <item.icon className="w-4 h-4 text-primary/70 shrink-0" />
-              {item.label}
+            <span key={item.label} className="flex items-center gap-2 text-sm text-foreground/80 bg-secondary/50 px-3 py-1.5 rounded-lg border border-border/40">
+              <item.icon className="w-4 h-4 text-primary shrink-0" />
+              <span>{item.label}</span>
             </span>
           ))}
         </div>

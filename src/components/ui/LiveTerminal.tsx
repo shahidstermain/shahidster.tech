@@ -46,22 +46,25 @@ export const LiveTerminal = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.5 }}
-      className="w-full max-w-lg"
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="w-full"
     >
-      <div className="rounded-xl overflow-hidden border border-border bg-card/80 backdrop-blur-sm shadow-2xl">
+      <div className="rounded-xl overflow-hidden border border-border/60 bg-card/60 backdrop-blur-md shadow-2xl">
         {/* Terminal header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-muted/50 border-b border-border">
+        <div className="flex items-center justify-between px-4 py-3 bg-muted/40 border-b border-border/50">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+            <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
           </div>
-          <span className="text-xs text-muted-foreground font-mono">singlestore-cli</span>
+          <div className="flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>singlestore-cli · cluster: healthy</span>
+          </div>
         </div>
         
         {/* Terminal body */}
-        <div className="p-4 font-mono text-sm">
+        <div className="p-4 sm:p-5 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto">
           {/* Command line */}
           <div className="flex items-start gap-2 text-muted-foreground">
             <span className="text-primary shrink-0">{commands[0].prompt}</span>
