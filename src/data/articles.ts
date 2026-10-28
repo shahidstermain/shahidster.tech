@@ -1,13 +1,8 @@
-export interface Article {
-  slug: string;
-  title: string;
-  description: string;
-  category: string;
-  readTime: string;
-  date: string;
-  featured: boolean;
-  seriesPosition?: string;
-  seoKeywords?: string[];
+import type { ArticleSummary } from "./articleSummaries";
+export type { ArticleSummary } from "./articleSummaries";
+export { articleSummaries } from "./articleSummaries";
+
+export interface Article extends ArticleSummary {
   content: string;
 }
 

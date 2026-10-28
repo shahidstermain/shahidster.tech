@@ -1,11 +1,11 @@
-import { articles } from "@/data/articles";
+import { articleSummaries } from "@/data/articleSummaries";
 
 export const COURSE_META = {
   name: "Database 201",
   tagline: "From Theory to Production",
   subtitle:
-    `A ${articles.length}-module field guide to distributed databases. Free to read. Faster to master with the Pro bundle.`,
-  totalModules: articles.length,
+    `A ${articleSummaries.length}-module field guide to distributed databases. Free to read. Faster to master with the Pro bundle.`,
+  totalModules: articleSummaries.length,
   price: 49,
   currency: "USD",
   refundDays: 30,
@@ -24,7 +24,7 @@ export interface CourseModule {
   hasProLab: boolean;
 }
 
-export const MODULES: CourseModule[] = articles.map((article, i) => ({
+export const MODULES: CourseModule[] = articleSummaries.map((article, i) => ({
   number: i + 1,
   slug: article.slug,
   title: article.title,

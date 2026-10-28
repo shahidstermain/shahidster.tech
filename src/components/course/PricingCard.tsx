@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Check, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { COURSE_META, PRO_BUNDLE_INCLUDES, getLemonSqueezyUrl } from "@/lib/course";
@@ -9,6 +10,15 @@ interface PricingCardProps {
 export function PricingCard({ compact = false }: PricingCardProps) {
   const checkoutUrl = getLemonSqueezyUrl();
   const isConfigured = checkoutUrl !== "#checkout-not-configured";
+
+  useEffect(() => {
+    if (typeof window === "undefined" || document.getElementById("lemonsqueezy-js")) return;
+    const script = document.createElement("script");
+    script.id = "lemonsqueezy-js";
+    script.src = "https://assets.lemonsqueezy.com/lemon.js";
+    script.defer = true;
+    document.body.appendChild(script);
+  }, []);
 
   function handleCheckout(e: React.MouseEvent<HTMLAnchorElement>) {
     if (!isConfigured) return;

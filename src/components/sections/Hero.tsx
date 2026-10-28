@@ -3,7 +3,6 @@ import { ArrowRight, ArrowDown, Github, Linkedin, Mail, FileDown, GraduationCap,
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LiveTerminal } from "@/components/ui/LiveTerminal";
-import shahidPhoto from "@/assets/shahid-moosa.jpg";
 import singlestoreLogo from "@/assets/logos/singlestore.svg";
 
 export const Hero = () => {
@@ -152,12 +151,14 @@ export const Hero = () => {
                     }}
                   />
                   <img
-                    src={shahidPhoto}
+                    src="/shahid-moosa.jpg"
                     alt="Shahid Moosa"
                     className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border border-border/60 shadow-xl"
                     width={112}
                     height={112}
                     loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                   />
                   <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-background animate-pulse" />
                 </div>

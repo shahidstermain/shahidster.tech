@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Section, SectionHeader } from "@/components/ui/Section";
 import { ArrowUpRight, Clock, Calendar, GraduationCap, Lock, Search, Sparkles } from "lucide-react";
-import { articles } from "@/data/articles";
+import { articleSummaries } from "@/data/articleSummaries";
 import { COURSE_META } from "@/lib/course";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,7 +43,7 @@ export const Writing = () => {
   }, [metaMap, isAdmin]);
   const isPremiumSlug = (slug: string) => !!metaMap[slug]?.is_premium;
 
-  const visibleArticles = useMemo(() => articles.filter((a) => isVisible(a.slug)), [isVisible]);
+  const visibleArticles = useMemo(() => articleSummaries.filter((a) => isVisible(a.slug)), [isVisible]);
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
