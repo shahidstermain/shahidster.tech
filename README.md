@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:06b6d4,100:22d3ee&height=180&section=header&text=shahidster.tech&fontSize=48&animation=fadeIn&fontAlignY=35" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:06b6d4,100:22d3ee&height=180&section=header&text=Shahid%20Moosa&fontSize=48&animation=fadeIn&fontAlignY=35" width="100%" />
 </h1>
 
 <p align="center">
@@ -11,16 +11,14 @@
 </p>
 
 <p align="center">
-  <strong>Personal Portfolio of Shahid Moosa 🧑‍💻</strong>
+  <strong>Distributed Systems Engineer's Personal Portfolio</strong>
 </p>
 
 ---
 
-## 🌐 About
+## 🌐 About This Site
 
-This is the personal portfolio site of **Shahid Moosa**, a Distributed Systems & DB Support Engineer based in Bengaluru, India.
-
-The site showcases technical writing, projects, and engineering philosophy.
+A high-performance, SEO-optimized technical portfolio built with a **techno-brutalist aesthetic**. It serves as a central hub for technical writing, resume, and engineering philosophy.
 
 ---
 
@@ -28,19 +26,24 @@ The site showcases technical writing, projects, and engineering philosophy.
 
 ### 🖥️ Technical Blog
 - Custom markdown-based blog engine
-- Deep dives into distributed systems
-- CAP theorem, sharding, consistency models
+- Deep dives into distributed systems (CAP theorem, sharding, consistency models)
+- Syntax highlighting for code blocks
 
 ### 🔍 SEO Optimized
 - Open Graph tags
 - Twitter Cards
 - JSON-LD structured data
-- RSS feed generation
+- Dynamic sitemap generation
+- RSS feed
 
-### 🎨 Design
-- Dark theme with cyan accents
-- Responsive mobile-first design
-- Fast page loads
+### 🎨 Interactive UI
+- **Live Terminal** component
+- Ambient glow effects
+- Smooth animations with Framer Motion
+
+### 📱 Responsive
+- Mobile-first design
+- Optimized layouts for all screen sizes
 
 ---
 
@@ -49,9 +52,12 @@ The site showcases technical writing, projects, and engineering philosophy.
 | Layer | Technology |
 |-------|------------|
 | Frontend | React 18, TypeScript |
-| Build | Vite |
-| Styling | Tailwind CSS |
-| Hosting | Firebase |
+| Build | Vite 5 |
+| Styling | Tailwind CSS, Shadcn UI |
+| Animation | Framer Motion |
+| Routing | React Router v6 |
+| Icons | Lucide React |
+| Hosting | Firebase Hosting |
 
 ---
 
@@ -67,7 +73,10 @@ npm run dev
 # Build for production
 npm run build
 
-# Deploy
+# Lint code
+npm run lint
+
+# Deploy to Firebase
 firebase deploy
 ```
 
@@ -77,39 +86,41 @@ firebase deploy
 
 ```
 src/
-├── app/            # Main app components
-├── components/     # Reusable UI components
-├── content/        # Blog content (markdown)
-├── lib/            # Utilities
-├── pages/          # Route pages
-└── styles/         # CSS styles
+├── assets/          # Static assets
+├── components/      # React components
+│   ├── layout/     # Header, Footer
+│   ├── sections/   # Page sections
+│   └── ui/         # Reusable primitives
+├── data/           # Blog articles (markdown)
+├── hooks/          # Custom React hooks
+├── lib/            # Utilities (RSS, Sitemap)
+└── pages/          # Route components
 ```
 
 ---
 
-## 👤 About Shahid Moosa
+## 📜 Engineering Philosophy
 
-- **Role**: Distributed Systems & DB Support Engineer
-- **Location**: Bengaluru, India
-- **Focus**: Building high-scale query optimizations, reliable infra, AI-powered platforms
+> **Data is the product** — Every query matters. Treating database interactions with the gravity of revenue impact.
 
-### Core Skills
-- SingleStore, PostgreSQL, CockroachDB
-- AWS, Docker, Kubernetes
-- Python, TypeScript, Go
+> **Fast debugging** — Developing intuition for finding root causes in distributed systems quickly.
+
+> **Reliability over features** — Prioritizing boring solutions that work over clever ones that fail at 3 AM.
+
+> **Knowledge Sharing** — Teaching and documenting to empower other engineers.
 
 ---
 
-## 📫 Connect
+## 🔗 Connect
 
 - 📧 **Email**: connect2shahidmoosa@gmail.com
-- 💼 **LinkedIn**: [linkedin.com/in/shahidmoosa](https://linkedin.com/in/shahidmoosa)
-- 🐙 **GitHub**: [github.com/shahidstermain](https://github.com/shahidstermain)
+- 💼 **LinkedIn**: linkedin.com/in/shahidmoosa
+- 🐙 **GitHub**: github.com/shahidstermain
 
 ---
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?repo=shahidster.tech&label=Views&color=06b6d4&style=flat" />
+  <img src="https://komarev.com/ghpvc/?repo=shahid-s-signature-site&label=Views&color=06b6d4&style=flat" />
 </p>
 
 <div align="center">

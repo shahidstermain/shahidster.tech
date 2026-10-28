@@ -1,139 +1,200 @@
-@import './styles/syntax-highlight.css';
+/* Google Fonts loaded asynchronously via index.html */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #08090a;
-  --foreground: #f7f8f8;
-  --accent: #5e6ad2;
-  --accent-foreground: #7170ff;
-  --silver-gray: #8a8f98;
+/* Shahid Moosa — Signature Portfolio Design System
+   Aesthetic: Calm tech minimalism with intentional drama
+   Inspired by: Stripe editorial, Linear polish, Rauno's craft
+*/
+
+@layer base {
+  :root {
+    /* Core palette - Deep slate with warm amber accent */
+    --background: 220 20% 4%;
+    --foreground: 45 10% 92%;
+    
+    --card: 220 18% 7%;
+    --card-foreground: 45 10% 92%;
+    
+    --popover: 220 18% 7%;
+    --popover-foreground: 45 10% 92%;
+    
+    /* Warm amber gold - signature accent */
+    --primary: 38 92% 50%;
+    --primary-foreground: 220 20% 4%;
+    
+    --secondary: 220 15% 12%;
+    --secondary-foreground: 45 10% 85%;
+    
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 55%;
+    
+    --accent: 38 92% 50%;
+    --accent-foreground: 220 20% 4%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 220 15% 15%;
+    --input: 220 15% 12%;
+    --ring: 38 92% 50%;
+    
+    --radius: 0.75rem;
+    
+    /* Custom tokens */
+    --gradient-gold: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(28 100% 60%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(220 18% 8%) 0%, hsl(220 20% 4%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220 18% 9%) 0%, hsl(220 18% 6%) 100%);
+    --glow-gold: 0 0 40px hsl(38 92% 50% / 0.15);
+    --glow-gold-strong: 0 0 80px hsl(38 92% 50% / 0.25);
+    --shadow-elevated: 0 20px 60px -15px hsl(0 0% 0% / 0.5);
+    --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.4);
+    
+    /* Typography */
+    --font-heading: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    
+    /* Spacing rhythm */
+    --section-gap: 8rem;
+    --content-gap: 4rem;
+
+    --sidebar-background: 220 18% 7%;
+    --sidebar-foreground: 45 10% 92%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 220 20% 4%;
+    --sidebar-accent: 220 15% 12%;
+    --sidebar-accent-foreground: 45 10% 85%;
+    --sidebar-border: 220 15% 15%;
+    --sidebar-ring: 38 92% 50%;
+  }
+
+  .dark {
+    /* Dark mode is default - same values */
+    --background: 220 20% 4%;
+    --foreground: 45 10% 92%;
+    --card: 220 18% 7%;
+    --card-foreground: 45 10% 92%;
+    --popover: 220 18% 7%;
+    --popover-foreground: 45 10% 92%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 220 20% 4%;
+    --secondary: 220 15% 12%;
+    --secondary-foreground: 45 10% 85%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 55%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 220 20% 4%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 15%;
+    --input: 220 15% 12%;
+    --ring: 38 92% 50%;
+    --sidebar-background: 220 18% 7%;
+    --sidebar-foreground: 45 10% 92%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 220 20% 4%;
+    --sidebar-accent: 220 15% 12%;
+    --sidebar-accent-foreground: 45 10% 85%;
+    --sidebar-border: 220 15% 15%;
+    --sidebar-ring: 38 92% 50%;
+  }
 }
 
-body {
-  margin: 0;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', -apple-system, system-ui, sans-serif;
-  font-feature-settings: "cv01", "ss03";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* GPU acceleration for animated elements */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Optimized scroll containers */
+  main, section {
+    will-change: auto;
+    contain: layout style;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    @apply tracking-tight;
+  }
+
+  ::selection {
+    background: hsl(38 92% 50% / 0.3);
+    color: hsl(45 10% 98%);
+  }
 }
 
-/* Custom Scrollbar for Terminal */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+@layer components {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-gold);
+  }
+
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 md:px-8;
+  }
+
+  .card-elevated {
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+    @apply border border-border rounded-2xl;
+  }
+
+  .glow-accent {
+    box-shadow: var(--glow-gold);
+  }
+
+  .link-underline {
+    @apply relative inline-block;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute left-0 bottom-0 w-full h-px bg-primary scale-x-0 origin-left transition-transform duration-300;
+  }
+
+  .link-underline:hover::after {
+    @apply scale-x-100;
+  }
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+@layer utilities {
+  .animate-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
 
-/* Linear Style Utilities */
-.linear-mask {
-  background: radial-gradient(circle at top, rgba(94, 106, 210, 0.15) 0%, transparent 70%);
-}
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-.linear-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  transition: all 0.2s ease-in-out;
-}
-
-.linear-card:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.linear-inset {
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 12px 0px inset;
-}
-
-/* Blog Prose Styles */
-.prose {
-  max-width: 65ch;
-  color: var(--silver-gray);
-}
-
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
-  color: var(--foreground);
-  font-weight: 510;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-}
-
-.prose h1 {
-  font-size: 2.5rem;
-}
-
-.prose h2 {
-  font-size: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 0.5rem;
-}
-
-.prose a {
-  color: var(--accent-foreground);
-  text-decoration: none;
-  font-weight: 510;
-  transition: color 0.2s;
-}
-
-.prose a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-.prose strong {
-  color: var(--foreground);
-  font-weight: 590;
-}
-
-.prose blockquote {
-  border-left: 2px solid var(--accent);
-  padding-left: 1.5rem;
-  font-style: italic;
-  color: var(--silver-gray);
-  margin: 1.5rem 0;
-}
-
-.prose table {
-  width: 100%;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  border-collapse: collapse;
-}
-
-.prose th,
-.prose td {
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.prose th {
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--foreground);
-  font-weight: 590;
-}
-
-/* Custom Animations */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.animate-blink-soft {
-  animation: blink 2s infinite ease-in-out;
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
 }

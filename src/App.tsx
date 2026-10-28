@@ -1,91 +1,50 @@
-import { useEffect } from 'react';
-import { useLocation, Outlet } from 'react-router-dom';
-import SEO from './components/SEO';
+import { lazy, Suspense } from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
 
-const HOME_URL = 'https://shahidster.tech';
-const HOME_IMAGE = `${HOME_URL}/shahid-moosa.jpg`;
+// Lazy load route components for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Course = lazy(() => import("./pages/Course"));
+const RSSFeed = lazy(() => import("./pages/RSSFeed"));
+const Sitemap = lazy(() => import("./pages/Sitemap"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Admin = lazy(() => import("./pages/Admin"));
 
-const homeStructuredData = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Person',
-      '@id': `${HOME_URL}/#person`,
-      name: 'Shahid Moosa',
-      url: HOME_URL,
-      image: HOME_IMAGE,
-      jobTitle: 'Cloud Database Support Engineer',
-      worksFor: {
-        '@type': 'Organization',
-        name: 'SingleStore',
-        url: 'https://www.singlestore.com/',
-      },
-      sameAs: [
-        'https://github.com/shahidstermain',
-        'https://www.linkedin.com/in/shahidmoosa',
-      ],
-      knowsAbout: [
-        'PostgreSQL',
-        'SingleStore',
-        'Distributed SQL',
-        'Database reliability',
-        'SQL performance tuning',
-        'Database replication',
-        'AWS cloud infrastructure',
-        'Production incident troubleshooting',
-      ],
-    },
-    {
-      '@type': 'ProfilePage',
-      '@id': `${HOME_URL}/#profile`,
-      url: HOME_URL,
-      name: 'Shahid Moosa - Cloud Database Support Engineer',
-      description: 'Portfolio and engineering resources covering PostgreSQL, SingleStore, distributed SQL, database reliability, AWS, performance tuning, replication, and production troubleshooting.',
-      mainEntity: {
-        '@id': `${HOME_URL}/#person`,
-      },
-      inLanguage: 'en-US',
-    },
-    {
-      '@type': 'WebSite',
-      '@id': `${HOME_URL}/#website`,
-      url: HOME_URL,
-      name: 'Shahid Moosa | Cloud Database Engineering',
-      description: 'Technical portfolio and engineering blog focused on cloud databases, PostgreSQL, distributed systems, database reliability, and production troubleshooting.',
-      publisher: {
-        '@id': `${HOME_URL}/#person`,
-      },
-      inLanguage: 'en-US',
-    },
-  ],
-};
+const queryClient = new QueryClient();
 
-/**
- * Global App Wrapper for layout and global effects.
- */
-const App = () => {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return (
-    <div className="app-container">
-      {pathname === '/' && (
-        <SEO
-          title="Shahid Moosa | Cloud Database Support Engineer | PostgreSQL & Distributed SQL"
-          description="Cloud Database Support Engineer specializing in PostgreSQL, SingleStore, distributed SQL, AWS, database reliability, SQL performance, replication, and production incident troubleshooting."
-          url={HOME_URL}
-          image={HOME_IMAGE}
-          imageAlt="Shahid Moosa, Cloud Database Support Engineer"
-          type="profile"
-          jsonLd={homeStructuredData}
-        />
-      )}
-      <Outlet />
-    </div>
-  );
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
+          <Suspense fallback={<div className="min-h-screen bg-background" />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/blog" element={<Navigate to="/course" replace />} />
+              <Route path="/blog/" element={<Navigate to="/course" replace />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/course" element={<Course />} />
+              <Route path="/rss" element={<RSSFeed />} />
+              <Route path="/rss.xml" element={<RSSFeed />} />
+              <Route path="/sitemap.xml" element={<Sitemap />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

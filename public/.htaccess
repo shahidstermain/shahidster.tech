@@ -1,8 +1,27 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+Options -MultiViews
+RewriteEngine On
+
+# Canonical redirects preserved from Firebase Hosting
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+RewriteRule ^home/?$ / [R=301,L]
+
+# Clean API URLs
+RewriteRule ^api/articles/?$ api/articles.php [L,QSA]
+RewriteRule ^api/subscribe/?$ api/subscribe.php [L,QSA]
+RewriteRule ^api/health/?$ api/health.php [L,QSA]
+
+# Serve existing files and directories directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# React Router SPA fallback
+RewriteRule ^ index.html [L]
+
+# Basic security headers equivalent to the previous Firebase configuration
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
