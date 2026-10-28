@@ -1,5 +1,15 @@
-Options -MultiViews
+Options -Indexes -MultiViews
 RewriteEngine On
+
+# Block access to hidden/sensitive files
+<FilesMatch "(^\..*|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op]|env|lock|yml|yaml))$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+<Files ".htaccess">
+  Order allow,deny
+  Deny from all
+</Files>
 
 # 1. Canonical Domain & HTTPS Enforcement (301 redirects)
 RewriteCond %{HTTP_HOST} ^www\.shahidster\.tech$ [NC]
@@ -30,7 +40,9 @@ RewriteRule ^ index.html [L]
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "DENY"
+  Header always set X-XSS-Protection "1; mode=block"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
 </IfModule>
 
 # 7. Gzip Compression
