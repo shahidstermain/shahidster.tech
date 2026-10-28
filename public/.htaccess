@@ -23,7 +23,8 @@ RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
 RewriteRule ^index\.html$ / [R=301,L]
 RewriteRule ^home/?$ / [R=301,L]
 
-# 3. Clean API URLs
+# 3. Clean API URLs & Internal Connector Protection
+RewriteRule ^api/db\.php$ - [F,L]
 RewriteRule ^api/articles/?$ api/articles.php [L,QSA]
 RewriteRule ^api/subscribe/?$ api/subscribe.php [L,QSA]
 RewriteRule ^api/health/?$ api/health.php [L,QSA]
@@ -38,11 +39,14 @@ RewriteRule ^ index.html [L]
 
 # 6. Performance & Security Headers
 <IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "DENY"
   Header always set X-XSS-Protection "1; mode=block"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  Header unset X-Powered-By
+  Header always unset X-Powered-By
 </IfModule>
 
 # 7. Gzip Compression

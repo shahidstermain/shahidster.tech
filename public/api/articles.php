@@ -5,6 +5,12 @@ require_once __DIR__ . '/db.php';
 $pdo = getDbConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Admin Key validation
+$admin_key = getenv('ADMIN_API_KEY') ?: 'Sh@hid_AdminKey_2026_Secure';
+$auth_header = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['HTTP_X_ADMIN_KEY'] ?? '';
+$bearer_token = trim(preg_replace('/^Bearer\s+/i', '', $auth_header));
+$is_admin = (!empty($bearer_token) && hash_equals($admin_key, $bearer_token));
+
 if ($method === 'GET') {
     $slug = isset($_GET['slug']) ? trim($_GET['slug']) : null;
 
@@ -14,13 +20,21 @@ if ($method === 'GET') {
         $row = $stmt->fetch();
 
         if ($row) {
+            $is_premium = (bool)$row['is_premium'];
+            $is_published = (bool)$row['published'];
+
+            // Gate content if article is premium and request lacks authorized session
+            $gated = ($is_premium && !$is_admin);
+            $content = $gated ? '' : ($row['full_content'] ?? '');
+
             echo json_encode([
                 'success' => true,
                 'slug' => $row['slug'],
-                'is_premium' => (bool)$row['is_premium'],
-                'published' => (bool)$row['published'],
+                'is_premium' => $is_premium,
+                'published' => $is_published,
+                'gated' => $gated,
                 'excerpt' => $row['excerpt'] ?? '',
-                'content' => $row['full_content'] ?? '',
+                'content' => $content,
                 'updated_at' => $row['updated_at']
             ]);
         } else {
@@ -56,7 +70,13 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
-    // Admin update for article published / premium status
+    // Enforce Admin Authentication
+    if (!$is_admin) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'error' => 'Unauthorized: valid admin authorization required']);
+        exit;
+    }
+
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);
 
@@ -66,13 +86,19 @@ if ($method === 'POST') {
         exit;
     }
 
-    $slug = trim($data['slug']);
-    $title = $data['title'] ?? $slug;
-    $category = $data['category'] ?? 'Systems Engineering';
+    $slug = preg_replace('/[^a-zA-Z0-9_-]/', '', trim($data['slug']));
+    if (empty($slug)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Invalid slug format']);
+        exit;
+    }
+
+    $title = htmlspecialchars(trim($data['title'] ?? $slug), ENT_QUOTES, 'UTF-8');
+    $category = htmlspecialchars(trim($data['category'] ?? 'Systems Engineering'), ENT_QUOTES, 'UTF-8');
     $is_premium = !empty($data['is_premium']) ? 1 : 0;
     $published = isset($data['published']) ? (!empty($data['published']) ? 1 : 0) : 1;
-    $excerpt = $data['excerpt'] ?? '';
-    $full_content = $data['full_content'] ?? '';
+    $excerpt = trim($data['excerpt'] ?? '');
+    $full_content = trim($data['full_content'] ?? '');
 
     $stmt = $pdo->prepare("INSERT INTO articles (slug, title, category, is_premium, published, excerpt, full_content) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -88,6 +114,28 @@ if ($method === 'POST') {
     $stmt->execute([$slug, $title, $category, $is_premium, $published, $excerpt, $full_content]);
 
     echo json_encode(['success' => true, 'slug' => $slug]);
+    exit;
+}
+
+if ($method === 'DELETE') {
+    // Enforce Admin Authentication for deleting overrides
+    if (!$is_admin) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'error' => 'Unauthorized: valid admin authorization required']);
+        exit;
+    }
+
+    $slug = isset($_GET['slug']) ? trim($_GET['slug']) : null;
+    if (!$slug) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'slug is required']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("DELETE FROM articles WHERE slug = ?");
+    $stmt->execute([$slug]);
+
+    echo json_encode(['success' => true, 'deleted' => $slug]);
     exit;
 }
 

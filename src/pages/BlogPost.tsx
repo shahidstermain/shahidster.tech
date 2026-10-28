@@ -13,6 +13,7 @@ import { ProUpsellCard } from "@/components/course/ProUpsellCard";
 import { COURSE_META } from "@/lib/course";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useMemo, useState } from "react";
+import DOMPurify from "dompurify";
 
 type ContentSegment =
   | { kind: "text"; value: string }
@@ -744,6 +745,10 @@ function formatContent(content: string): string {
 
   // 4. Links: [text](url)
   processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text, url) => {
+    // Block dangerous URI schemes (javascript:, data:, vbscript:)
+    if (/^\s*(javascript|data|vbscript):/i.test(url)) {
+      return text;
+    }
     const isExternal = /^https?:\/\//i.test(url) && !url.includes("shahidster.tech");
     const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : "";
     return `<a href="${url}"${target}>${text}</a>`;
@@ -801,5 +806,9 @@ function formatContent(content: string): string {
   // 13. Restore isolated code blocks
   processed = processed.replace(/__CODE_BLOCK_(\d+)__/g, (_m, idx) => codeBlocks[Number(idx)] || "");
 
-  return processed;
+  // 14. Robust XSS sanitization via DOMPurify
+  return DOMPurify.sanitize(processed, {
+    ADD_ATTR: ["target", "rel", "id", "class", "loading"],
+    ADD_TAGS: ["figure", "figcaption"],
+  });
 }

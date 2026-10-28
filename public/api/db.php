@@ -4,20 +4,51 @@
  * Connects to the local MariaDB instance at 127.0.0.1:3306
  */
 
-header('Access-Control-Allow-Origin: *');
+// Block direct access to connector file
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'db.php') {
+    http_response_code(403);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => false, 'error' => 'Direct access forbidden']);
+    exit;
+}
+
+// Allowed CORS origins
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowed_origins = [
+    'https://shahidster.tech',
+    'https://www.shahidster.tech',
+    'http://localhost:8080',
+    'http://localhost:5173',
+    'http://localhost:4173'
+];
+
+if (in_array($origin, $allowed_origins, true)) {
+    header("Access-Control-Allow-Origin: {$origin}");
+    header('Access-Control-Allow-Credentials: true');
+} else {
+    // For public GET requests, allow origin
+    header('Access-Control-Allow-Origin: *');
+}
+
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Admin-Key');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-$db_host = '127.0.0.1';
-$db_port = 3306;
-$db_name = 'u873719529_shahidster_db';
-$db_user = 'u873719529_shahid_dbuser';
-$db_pass = 'Sh@hidster_Db2026!xM';
+// Credentials - allow external override outside webroot if present
+$db_host = getenv('DB_HOST') ?: '127.0.0.1';
+$db_port = (int)(getenv('DB_PORT') ?: 3306);
+$db_name = getenv('DB_NAME') ?: 'u873719529_shahidster_db';
+$db_user = getenv('DB_USER') ?: 'u873719529_shahid_dbuser';
+$db_pass = getenv('DB_PASS') ?: 'Sh@hidster_Db2026!xM';
+
+$external_config = '/home/u873719529/.db_config.php';
+if (file_exists($external_config)) {
+    @include_once $external_config;
+}
 
 function getDbConnection() {
     global $db_host, $db_port, $db_name, $db_user, $db_pass;
@@ -33,19 +64,17 @@ function getDbConnection() {
         ];
         try {
             $pdo = new PDO($dsn, $db_user, $db_pass, $options);
-            initializeTables($pdo);
         } catch (PDOException $e) {
             // Fallback to localhost socket if 127.0.0.1 fails
             try {
                 $dsn_fallback = "mysql:host=localhost;dbname={$db_name};charset=utf8mb4";
                 $pdo = new PDO($dsn_fallback, $db_user, $db_pass, $options);
-                initializeTables($pdo);
             } catch (PDOException $e2) {
                 http_response_code(500);
+                header('Content-Type: application/json; charset=utf-8');
                 echo json_encode([
                     'success' => false,
-                    'error' => 'Database connection failed',
-                    'message' => $e2->getMessage()
+                    'error' => 'Database connection failed'
                 ]);
                 exit;
             }

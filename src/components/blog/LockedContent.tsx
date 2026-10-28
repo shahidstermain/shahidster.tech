@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
+import DOMPurify from "dompurify";
 
 interface LockedContentProps {
   excerptHtml: string;
@@ -62,7 +63,7 @@ export const LockedContent = ({ excerptHtml, slug }: LockedContentProps) => {
             prose-a:text-primary prose-strong:text-foreground
             prose-code:text-primary prose-code:bg-primary/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
           "
-          dangerouslySetInnerHTML={{ __html: excerptHtml }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(excerptHtml) }}
         />
         {/* Fade overlay */}
         <div
