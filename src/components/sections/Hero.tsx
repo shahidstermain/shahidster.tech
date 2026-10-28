@@ -37,23 +37,13 @@ export const Hero = () => {
             </motion.div>
 
             {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.08 }}
-              className="font-heading text-4xl sm:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.08] mb-6 text-foreground"
-            >
+            <h1 className="font-heading text-4xl sm:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.08] mb-6 text-foreground">
               I keep distributed databases{" "}
               <span className="text-gradient">alive at scale.</span>
-            </motion.h1>
+            </h1>
 
             {/* Subheading */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.16 }}
-              className="mb-8"
-            >
+            <div className="mb-8">
               <p className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
                 Database Cloud Support Engineer at{" "}
                 <a
@@ -67,7 +57,7 @@ export const Hero = () => {
                 </a>
                 . Troubleshooting distributed columnar clusters, query plan bottlenecks, and high-severity incidents across AWS, Azure, and hybrid deployments.
               </p>
-            </motion.div>
+            </div>
 
             {/* Focused 2-Tier CTAs */}
             <motion.div
