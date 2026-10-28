@@ -1,27 +1,51 @@
 Options -MultiViews
 RewriteEngine On
 
-# Canonical redirects preserved from Firebase Hosting
+# 1. Canonical Domain & HTTPS Enforcement (301 redirects)
+RewriteCond %{HTTP_HOST} ^www\.shahidster\.tech$ [NC]
+RewriteRule ^(.*)$ https://shahidster.tech/$1 [R=301,L]
+
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://shahidster.tech/$1 [R=301,L]
+
+# 2. Canonical index.html & /home redirects
 RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
 RewriteRule ^index\.html$ / [R=301,L]
 RewriteRule ^home/?$ / [R=301,L]
 
-# Clean API URLs
+# 3. Clean API URLs
 RewriteRule ^api/articles/?$ api/articles.php [L,QSA]
 RewriteRule ^api/subscribe/?$ api/subscribe.php [L,QSA]
 RewriteRule ^api/health/?$ api/health.php [L,QSA]
 
-# Serve existing files and directories directly
+# 4. Serve existing files and directories directly
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# React Router SPA fallback
+# 5. React Router SPA fallback
 RewriteRule ^ index.html [L]
 
-# Basic security headers equivalent to the previous Firebase configuration
+# 6. Performance & Security Headers
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "DENY"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 7. Gzip Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/rss+xml image/svg+xml
+</IfModule>
+
+# 8. Browser Caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/rss+xml "access plus 1 hour"
 </IfModule>

@@ -51,7 +51,7 @@ function buildCourseJsonLd() {
         price: "0",
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
-        name: "Free (all 14 modules)",
+        name: `Free (all ${COURSE_META.totalModules} modules)`,
       },
       {
         "@type": "Offer",
@@ -118,7 +118,7 @@ export default function Course() {
     };
 
     const description =
-      "A 14-module field guide to distributed databases. Free to read. Faster to master with the Pro bundle — PDF + EPUB eBook, SQL labs, and runbook templates.";
+      `A ${COURSE_META.totalModules}-module field guide to distributed databases. Free to read. Faster to master with the Pro bundle — PDF + EPUB eBook, SQL labs, and runbook templates.`;
 
     setMeta("description", description);
     setMeta("og:title", title, true);

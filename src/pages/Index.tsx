@@ -13,6 +13,12 @@ import { useEffect } from "react";
 
 const Index = () => {
   useEffect(() => {
+    document.title = "Shahid Moosa — Cloud Database Engineer";
+    const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (canonical) {
+      canonical.href = "https://shahidster.tech";
+    }
+
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "Person",

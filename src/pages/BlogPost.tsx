@@ -11,7 +11,6 @@ import { LockedContent } from "@/components/blog/LockedContent";
 import { NewsletterForm } from "@/components/course/NewsletterForm";
 import { ProUpsellCard } from "@/components/course/ProUpsellCard";
 import { COURSE_META } from "@/lib/course";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useMemo, useState } from "react";
 
@@ -44,9 +43,31 @@ const SITE_URL = "https://shahidster.tech";
 const AUTHOR_NAME = "Shahid Moosa";
 const TWITTER_HANDLE = "@shahidster_";
 
+function parseArticleDateToISO(dateStr: string): string {
+  const months: Record<string, string> = {
+    Jan: '01', Feb: '02', Mar: '03', Apr: '04',
+    May: '05', Jun: '06', Jul: '07', Aug: '08',
+    Sep: '09', Oct: '10', Nov: '11', Dec: '12',
+  };
+  const parts = dateStr.trim().split(' ');
+  if (parts.length === 2) {
+    const month = months[parts[0]] || '01';
+    const year = parts[1];
+    return `${year}-${month}-15T00:00:00.000Z`;
+  }
+  try {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d.toISOString();
+  } catch {
+    // fallback
+  }
+  return new Date().toISOString();
+}
+
 // Update document meta tags for social sharing
 function updateMetaTags(article: Article) {
   const articleUrl = `${SITE_URL}/blog/${article.slug}`;
+  const isoDate = parseArticleDateToISO(article.date);
   
   // Helper to set or create meta tag
   const setMeta = (property: string, content: string, isName = false) => {
@@ -76,7 +97,7 @@ function updateMetaTags(article: Article) {
   setMeta("og:locale", "en_US");
   setMeta("og:image", `${SITE_URL}/og-image.png`);
   setMeta("article:author", AUTHOR_NAME);
-  setMeta("article:published_time", new Date(article.date).toISOString());
+  setMeta("article:published_time", isoDate);
   setMeta("article:section", article.category);
   setMeta("article:tag", article.seoKeywords?.join(", ") || article.category);
   
@@ -117,29 +138,42 @@ function getSeriesNavigation(currentSlug: string): { prev: Article | null; next:
   };
 }
 
-// Generate JSON-LD structured data for Article schema
+// Generate JSON-LD structured data for TechArticle schema
 function generateArticleJsonLd(article: Article, currentIndex: number, total: number): object {
   const siteUrl = "https://shahidster.tech";
   const articleUrl = `${siteUrl}/blog/${article.slug}`;
+  const isoDate = parseArticleDateToISO(article.date);
   
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "TechArticle",
     "@id": articleUrl,
     "headline": article.title,
     "description": article.description,
-    "datePublished": new Date(article.date).toISOString(),
-    "dateModified": new Date(article.date).toISOString(),
+    "datePublished": isoDate,
+    "dateModified": isoDate,
     "author": {
       "@type": "Person",
       "name": "Shahid Moosa",
       "url": siteUrl,
-      "jobTitle": "Distributed Systems Engineer"
+      "image": `${siteUrl}/shahid-moosa.jpg`,
+      "jobTitle": "Cloud Database Support Engineer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "SingleStore",
+        "url": "https://www.singlestore.com"
+      },
+      "sameAs": [
+        "https://github.com/shahidmoosa",
+        "https://linkedin.com/in/shahidmoosa",
+        "https://twitter.com/shahidster_"
+      ]
     },
     "publisher": {
       "@type": "Person",
       "name": "Shahid Moosa",
-      "url": siteUrl
+      "url": siteUrl,
+      "image": `${siteUrl}/shahid-moosa.jpg`
     },
     "mainEntityOfPage": {
       "@type": "WebPage",

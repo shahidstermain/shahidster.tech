@@ -120,7 +120,7 @@ export const Hero = () => {
                 { value: "5+ Yrs", label: "Production Support" },
                 { value: "Tier-2/3", label: "Incident Escalations" },
                 { value: "Distributed", label: "SingleStore & AWS" },
-                { value: "16 Lessons", label: "Free Course Content" },
+                { value: "15 Modules", label: "Free Database Course" },
               ].map((stat) => (
                 <div
                   key={stat.label}

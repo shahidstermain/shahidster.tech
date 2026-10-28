@@ -4,7 +4,7 @@ import { Section, SectionHeader } from "@/components/ui/Section";
 import { ArrowUpRight, Clock, Calendar, GraduationCap, Lock, Search, Sparkles } from "lucide-react";
 import { articles } from "@/data/articles";
 import { COURSE_META } from "@/lib/course";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface ArticleMeta {
@@ -36,14 +36,14 @@ export const Writing = () => {
   }, []);
 
   // Hide articles that have a DB row with published=false (unless viewer is admin)
-  const isVisible = (slug: string) => {
+  const isVisible = useCallback((slug: string) => {
     const meta = metaMap[slug];
     if (!meta) return true; // no DB row = legacy free article, visible
     return meta.published || isAdmin;
-  };
+  }, [metaMap, isAdmin]);
   const isPremiumSlug = (slug: string) => !!metaMap[slug]?.is_premium;
 
-  const visibleArticles = useMemo(() => articles.filter((a) => isVisible(a.slug)), [metaMap, isAdmin]);
+  const visibleArticles = useMemo(() => articles.filter((a) => isVisible(a.slug)), [isVisible]);
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
@@ -92,7 +92,7 @@ export const Writing = () => {
             <div className="min-w-0">
               <div className="font-medium group-hover:text-primary transition-colors flex items-center gap-2">
                 View the full {COURSE_META.name} syllabus
-                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">16 Modules</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-mono">{COURSE_META.totalModules} Modules</span>
               </div>
               <div className="text-sm text-muted-foreground">
                 Free email course · optional ${COURSE_META.price} Pro bundle with eBook + SQL labs

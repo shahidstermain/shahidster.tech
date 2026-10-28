@@ -4,15 +4,15 @@ export const COURSE_META = {
   name: "Database 201",
   tagline: "From Theory to Production",
   subtitle:
-    "A 14-module field guide to distributed databases. Free to read. Faster to master with the Pro bundle.",
-  totalModules: 14,
+    `A ${articles.length}-module field guide to distributed databases. Free to read. Faster to master with the Pro bundle.`,
+  totalModules: articles.length,
   price: 49,
   currency: "USD",
   refundDays: 30,
   deliveryFormat: "PDF + EPUB + SQL labs + runbook templates",
   author: "Shahid Moosa",
   url: "https://shahidster.tech/course",
-} as const;
+};
 
 export interface CourseModule {
   number: number;
@@ -37,7 +37,7 @@ export const MODULES: CourseModule[] = articles.map((article, i) => ({
 export const PRO_BUNDLE_INCLUDES = [
   {
     title: "The full Database 201 eBook",
-    description: "All 14 modules, polished, indexed, and cross-referenced as a single PDF + EPUB (220+ pages).",
+    description: "All 15 modules, polished, indexed, and cross-referenced as a single PDF + EPUB (220+ pages).",
     icon: "BookOpen",
   },
   {

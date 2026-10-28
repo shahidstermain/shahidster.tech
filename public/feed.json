@@ -1,0 +1,159 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Shahid Moosa — Distributed Systems Engineering",
+  "home_page_url": "https://shahidster.tech",
+  "feed_url": "https://shahidster.tech/feed.json",
+  "description": "Deep dives into distributed databases, query optimization, and production infrastructure.",
+  "items": [
+    {
+      "id": "https://shahidster.tech/blog/parsing-10gb-database-bundles-locally",
+      "url": "https://shahidster.tech/blog/parsing-10gb-database-bundles-locally",
+      "title": "Out-of-Memory No More: Parsing 10GB Database Diagnostic Bundles Locally",
+      "summary": "How I built S2 Report Sniffer's bounded-memory stream processing engine to ingest massive distributed database logs without crashing.",
+      "date_published": "2026-05-01T00:00:00.000Z",
+      "tags": [
+        "Systems Engineering"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/cap-theorem-production",
+      "url": "https://shahidster.tech/blog/cap-theorem-production",
+      "title": "Understanding CAP Theorem in Production",
+      "summary": "A practical guide to navigating consistency, availability, and partition tolerance trade-offs when architecting distributed databases.",
+      "date_published": "2024-11-01T00:00:00.000Z",
+      "tags": [
+        "Fundamentals"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/pragmatic-consistency",
+      "url": "https://shahidster.tech/blog/pragmatic-consistency",
+      "title": "Pragmatic Consistency: When Stronger Isn't Better",
+      "summary": "The case against defaulting to strict serializability. Mapping business requirements to the lowest viable consistency level for maximum scalability.",
+      "date_published": "2024-10-01T00:00:00.000Z",
+      "tags": [
+        "Architecture"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/latency-tax-separated-compute-storage",
+      "url": "https://shahidster.tech/blog/latency-tax-separated-compute-storage",
+      "title": "The Latency Tax of Separated Compute and Storage",
+      "summary": "A critical analysis of disaggregated storage architectures vs shared-nothing systems. Examining network I/O penalties and why caching layers fail for high-concurrency point lookups.",
+      "date_published": "2024-09-01T00:00:00.000Z",
+      "tags": [
+        "Architecture"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/data-skew-distributed-joins",
+      "url": "https://shahidster.tech/blog/data-skew-distributed-joins",
+      "title": "Surviving Data Skew in Distributed Joins",
+      "summary": "How uneven data distribution destroys shuffle join performance. Contrasting broadcast joins vs repartitioning and why query optimizers often miss skew.",
+      "date_published": "2024-08-01T00:00:00.000Z",
+      "tags": [
+        "Performance"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/non-blocking-ddl-myth",
+      "url": "https://shahidster.tech/blog/non-blocking-ddl-myth",
+      "title": "Non-Blocking DDL is a Myth: Schema Evolution at Scale",
+      "summary": "How lock propagation and metadata sync cause latency spikes even in 'online' DDL. Defensive patterns for schema migration using expansion/contraction strategies.",
+      "date_published": "2024-07-01T00:00:00.000Z",
+      "tags": [
+        "Deep Dive"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/defensive-ingestion-backpressure-htap",
+      "url": "https://shahidster.tech/blog/defensive-ingestion-backpressure-htap",
+      "title": "Defensive Ingestion: Managing Backpressure in HTAP Systems",
+      "summary": "Protecting HTAP systems from ingestion floods. Why Kafka alone isn't enough and how to implement database-aware flow control.",
+      "date_published": "2024-06-01T00:00:00.000Z",
+      "tags": [
+        "Operations"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/query-optimization-petabyte-scale",
+      "url": "https://shahidster.tech/blog/query-optimization-petabyte-scale",
+      "title": "Query Optimization at Petabyte Scale",
+      "summary": "Lessons learned from debugging slow queries across distributed nodes. Execution plans, index strategies, and memory management.",
+      "date_published": "2024-05-01T00:00:00.000Z",
+      "tags": [
+        "Deep Dive"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/incident-response-database-engineers",
+      "url": "https://shahidster.tech/blog/incident-response-database-engineers",
+      "title": "Incident Response for Database Engineers",
+      "summary": "A battle-tested playbook for handling production database incidents. From detection to resolution to post-mortem.",
+      "date_published": "2024-04-01T00:00:00.000Z",
+      "tags": [
+        "Operations"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/sharding-strategies-that-work",
+      "url": "https://shahidster.tech/blog/sharding-strategies-that-work",
+      "title": "Sharding Strategies That Actually Work",
+      "summary": "Comparing hash, range, and geo-based sharding with real performance benchmarks and migration patterns.",
+      "date_published": "2024-03-01T00:00:00.000Z",
+      "tags": [
+        "Architecture"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/singlestore-production-lessons",
+      "url": "https://shahidster.tech/blog/singlestore-production-lessons",
+      "title": "Lessons Learned Running SingleStore in Production",
+      "summary": "Real-world lessons from operating SingleStore clusters—from memory sizing and query pitfalls to silent failures and what I'd do differently next time.",
+      "date_published": "2026-04-01T00:00:00.000Z",
+      "tags": [
+        "Operations"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/singlestore-execution-engine",
+      "url": "https://shahidster.tech/blog/singlestore-execution-engine",
+      "title": "Understanding the SingleStore Execution Engine",
+      "summary": "A field guide to SingleStore's execution engine—how aggregators and leaves work, why data movement is expensive, and how to read an execution plan like a detective.",
+      "date_published": "2026-03-01T00:00:00.000Z",
+      "tags": [
+        "Deep Dive"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/indexes-everywhere-bad-strategy",
+      "url": "https://shahidster.tech/blog/indexes-everywhere-bad-strategy",
+      "title": "Why Indexes Everywhere Is a Bad Strategy",
+      "summary": "Indexes look like free speed—until they quietly tax every write, consume memory, and evict the data you actually need.",
+      "date_published": "2026-02-01T00:00:00.000Z",
+      "tags": [
+        "Performance"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/your-database-is-probably-fine",
+      "url": "https://shahidster.tech/blog/your-database-is-probably-fine",
+      "title": "Your Database Is Probably Fine",
+      "summary": "Most outages blamed on the database aren't the database's fault—they're query-shape problems in disguise.",
+      "date_published": "2026-01-01T00:00:00.000Z",
+      "tags": [
+        "Operations"
+      ]
+    },
+    {
+      "id": "https://shahidster.tech/blog/vertical-beats-horizontal-scaling",
+      "url": "https://shahidster.tech/blog/vertical-beats-horizontal-scaling",
+      "title": "When Vertical Scaling Beats Horizontal",
+      "summary": "Horizontal scale sounds heroic—until you realize it adds failure modes, latency, and complexity your workload never needed.",
+      "date_published": "2025-12-01T00:00:00.000Z",
+      "tags": [
+        "Architecture"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shahid Moosa — Distributed Systems Engineering</title>
+    <link>https://shahidster.tech</link>
+    <description>Deep dives into distributed databases, query optimization, and production infrastructure.</description>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 28 Oct 2026 01:31:02 GMT</lastBuildDate>
+    <atom:link href="https://shahidster.tech/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Out-of-Memory No More: Parsing 10GB Database Diagnostic Bundles Locally</title>
+      <link>https://shahidster.tech/blog/parsing-10gb-database-bundles-locally</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/parsing-10gb-database-bundles-locally</guid>
+      <description>How I built S2 Report Sniffer&apos;s bounded-memory stream processing engine to ingest massive distributed database logs without crashing.</description>
+      <pubDate>Fri, 01 May 2026 00:00:00 GMT</pubDate>
+      <category>Systems Engineering</category>
+    </item>
+    <item>
+      <title>Understanding CAP Theorem in Production</title>
+      <link>https://shahidster.tech/blog/cap-theorem-production</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/cap-theorem-production</guid>
+      <description>A practical guide to navigating consistency, availability, and partition tolerance trade-offs when architecting distributed databases.</description>
+      <pubDate>Fri, 01 Nov 2024 00:00:00 GMT</pubDate>
+      <category>Fundamentals</category>
+    </item>
+    <item>
+      <title>Pragmatic Consistency: When Stronger Isn&apos;t Better</title>
+      <link>https://shahidster.tech/blog/pragmatic-consistency</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/pragmatic-consistency</guid>
+      <description>The case against defaulting to strict serializability. Mapping business requirements to the lowest viable consistency level for maximum scalability.</description>
+      <pubDate>Tue, 01 Oct 2024 00:00:00 GMT</pubDate>
+      <category>Architecture</category>
+    </item>
+    <item>
+      <title>The Latency Tax of Separated Compute and Storage</title>
+      <link>https://shahidster.tech/blog/latency-tax-separated-compute-storage</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/latency-tax-separated-compute-storage</guid>
+      <description>A critical analysis of disaggregated storage architectures vs shared-nothing systems. Examining network I/O penalties and why caching layers fail for high-concurrency point lookups.</description>
+      <pubDate>Sun, 01 Sep 2024 00:00:00 GMT</pubDate>
+      <category>Architecture</category>
+    </item>
+    <item>
+      <title>Surviving Data Skew in Distributed Joins</title>
+      <link>https://shahidster.tech/blog/data-skew-distributed-joins</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/data-skew-distributed-joins</guid>
+      <description>How uneven data distribution destroys shuffle join performance. Contrasting broadcast joins vs repartitioning and why query optimizers often miss skew.</description>
+      <pubDate>Thu, 01 Aug 2024 00:00:00 GMT</pubDate>
+      <category>Performance</category>
+    </item>
+    <item>
+      <title>Non-Blocking DDL is a Myth: Schema Evolution at Scale</title>
+      <link>https://shahidster.tech/blog/non-blocking-ddl-myth</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/non-blocking-ddl-myth</guid>
+      <description>How lock propagation and metadata sync cause latency spikes even in &apos;online&apos; DDL. Defensive patterns for schema migration using expansion/contraction strategies.</description>
+      <pubDate>Mon, 01 Jul 2024 00:00:00 GMT</pubDate>
+      <category>Deep Dive</category>
+    </item>
+    <item>
+      <title>Defensive Ingestion: Managing Backpressure in HTAP Systems</title>
+      <link>https://shahidster.tech/blog/defensive-ingestion-backpressure-htap</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/defensive-ingestion-backpressure-htap</guid>
+      <description>Protecting HTAP systems from ingestion floods. Why Kafka alone isn&apos;t enough and how to implement database-aware flow control.</description>
+      <pubDate>Sat, 01 Jun 2024 00:00:00 GMT</pubDate>
+      <category>Operations</category>
+    </item>
+    <item>
+      <title>Query Optimization at Petabyte Scale</title>
+      <link>https://shahidster.tech/blog/query-optimization-petabyte-scale</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/query-optimization-petabyte-scale</guid>
+      <description>Lessons learned from debugging slow queries across distributed nodes. Execution plans, index strategies, and memory management.</description>
+      <pubDate>Wed, 01 May 2024 00:00:00 GMT</pubDate>
+      <category>Deep Dive</category>
+    </item>
+    <item>
+      <title>Incident Response for Database Engineers</title>
+      <link>https://shahidster.tech/blog/incident-response-database-engineers</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/incident-response-database-engineers</guid>
+      <description>A battle-tested playbook for handling production database incidents. From detection to resolution to post-mortem.</description>
+      <pubDate>Mon, 01 Apr 2024 00:00:00 GMT</pubDate>
+      <category>Operations</category>
+    </item>
+    <item>
+      <title>Sharding Strategies That Actually Work</title>
+      <link>https://shahidster.tech/blog/sharding-strategies-that-work</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/sharding-strategies-that-work</guid>
+      <description>Comparing hash, range, and geo-based sharding with real performance benchmarks and migration patterns.</description>
+      <pubDate>Fri, 01 Mar 2024 00:00:00 GMT</pubDate>
+      <category>Architecture</category>
+    </item>
+    <item>
+      <title>Lessons Learned Running SingleStore in Production</title>
+      <link>https://shahidster.tech/blog/singlestore-production-lessons</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/singlestore-production-lessons</guid>
+      <description>Real-world lessons from operating SingleStore clusters—from memory sizing and query pitfalls to silent failures and what I&apos;d do differently next time.</description>
+      <pubDate>Wed, 01 Apr 2026 00:00:00 GMT</pubDate>
+      <category>Operations</category>
+    </item>
+    <item>
+      <title>Understanding the SingleStore Execution Engine</title>
+      <link>https://shahidster.tech/blog/singlestore-execution-engine</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/singlestore-execution-engine</guid>
+      <description>A field guide to SingleStore&apos;s execution engine—how aggregators and leaves work, why data movement is expensive, and how to read an execution plan like a detective.</description>
+      <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
+      <category>Deep Dive</category>
+    </item>
+    <item>
+      <title>Why Indexes Everywhere Is a Bad Strategy</title>
+      <link>https://shahidster.tech/blog/indexes-everywhere-bad-strategy</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/indexes-everywhere-bad-strategy</guid>
+      <description>Indexes look like free speed—until they quietly tax every write, consume memory, and evict the data you actually need.</description>
+      <pubDate>Sun, 01 Feb 2026 00:00:00 GMT</pubDate>
+      <category>Performance</category>
+    </item>
+    <item>
+      <title>Your Database Is Probably Fine</title>
+      <link>https://shahidster.tech/blog/your-database-is-probably-fine</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/your-database-is-probably-fine</guid>
+      <description>Most outages blamed on the database aren&apos;t the database&apos;s fault—they&apos;re query-shape problems in disguise.</description>
+      <pubDate>Thu, 01 Jan 2026 00:00:00 GMT</pubDate>
+      <category>Operations</category>
+    </item>
+    <item>
+      <title>When Vertical Scaling Beats Horizontal</title>
+      <link>https://shahidster.tech/blog/vertical-beats-horizontal-scaling</link>
+      <guid isPermaLink="true">https://shahidster.tech/blog/vertical-beats-horizontal-scaling</guid>
+      <description>Horizontal scale sounds heroic—until you realize it adds failure modes, latency, and complexity your workload never needed.</description>
+      <pubDate>Mon, 01 Dec 2025 00:00:00 GMT</pubDate>
+      <category>Architecture</category>
+    </item>
+  </channel>
+</rss>
