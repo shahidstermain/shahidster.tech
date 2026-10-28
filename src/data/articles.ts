@@ -28,7 +28,7 @@ As a Distributed Systems and DB Support Engineer, a significant portion of my ti
 
 Inside these bundles? Gigabytes of unstructured logs (\`memsql.log\`), OS metrics, \`dmesg\` dumps, and hardware telemetry scattered across dozens of leaf and aggregator nodes.
 
-The traditional approach to triaging these bundles involves extracting them to disk and running a battery of \`grep\` and \`awk\` scripts. It's slow, context-switching is painful, and correlating an \`ETIMEDOUT\` network drop on Leaf 4 with an \`fsync is behind\` error on Aggregator 1 is a nightmare.
+The traditional approach to triaging these bundles involves extracting them to disk and running a battery of \`grep\` and \`awk\` scripts. It's slow, context-switching is painful, and correlating an \`ETIMEDOUT\` network drop on Leaf 4 with an \`fsync is behind\` error on Aggregator 1 is a nightmare. During a high-severity cluster outage, rapid [database incident response](/blog/incident-response-database-engineers) demands fast root-cause analysis without waiting hours for multi-gigabyte cloud extracts.
 
 So, I decided to build **S2 Report Sniffer**, an offline, local-first diagnostic tool that automates this analysis. But I immediately hit a wall: **Out-of-Memory (OOM) crashes**.
 
@@ -49,7 +49,7 @@ with tarfile.open('bundle.tar.gz', 'r:gz') as tar:
         process_logs(content)
 \`\`\`
 
-When a cluster generates millions of log lines per hour, reading strings directly into RAM will instantly exhaust the heap of a standard web application, leading to a catastrophic crash.
+When a cluster generates millions of log lines per hour, reading strings directly into RAM will instantly exhaust the heap of a standard web application, leading to a catastrophic crash. Much like [managing backpressure in HTAP ingestion pipelines](/blog/defensive-ingestion-backpressure-htap), bounded consumption is non-negotiable.
 
 ## The Solution: Bounded Stream Processing
 
@@ -109,13 +109,13 @@ With the parsing constrained to a flat memory profile, the backend normalizes th
 SuperChecker evaluates the aggregated buckets:
 *   *Did \`vm.swappiness\` exceed the recommended threshold?*
 *   *Were there more than 100 \`ETIMEDOUT\` errors during the backup window?*
-*   *Is partition distribution heavily skewed?*
+*   *Is partition distribution heavily skewed?* (A classic distributed bottleneck we unpack in [surviving data skew in distributed joins](/blog/data-skew-distributed-joins))
 
 It outputs a structured JSON response containing deterministic risk scores and "Fix-First" remediations, which the React UI renders into an interactive dashboard.
 
 ## The Takeaway
 
-When building diagnostic tools for distributed systems, you have to assume the worst-case scenario. Logs will be spammy, archives will be massive, and resources will be constrained.
+When building diagnostic tools for distributed systems, you have to assume the worst-case scenario. Logs will be spammy, archives will be massive, and resources will be constrained. Memory is oxygen in distributed engines—as detailed in our [SingleStore production lessons](/blog/singlestore-production-lessons), uncontrolled allocations lead straight to OOM kills.
 
 By embracing stream processing and deterministic memory caps, S2 Report Sniffer can now analyze a 10GB production database failure on a standard MacBook Air in seconds, all while staying entirely offline.
 `
@@ -249,7 +249,7 @@ Real systems mix approaches:
 └──────────────────┴──────────────────────────┘
 \`\`\`
 
-Use CP for the 5% of operations that need it; use AP for the 95% that don't. This hybrid thinking informs our later discussion on [HTAP systems and backpressure management](/blog/defensive-ingestion-backpressure-htap).
+Use CP for the 5% of operations that need it; use AP for the 95% that don't. This hybrid thinking informs our exploration of [disaggregated compute and storage latency](/blog/latency-tax-separated-compute-storage) and [HTAP systems with defensive backpressure](/blog/defensive-ingestion-backpressure-htap).
 
 ## Conclusion
 
@@ -1331,6 +1331,7 @@ Prepare before incidents happen:
 
 - [ ] Runbooks for common scenarios
 - [ ] Quick reference for critical commands
+- [ ] Diagnostic tools: analyze crash dumps and log archives using [bounded stream processing for 10GB diagnostic bundles](/blog/parsing-10gb-database-bundles-locally)
 - [ ] Contact list for escalation
 - [ ] Access credentials verified
 - [ ] Monitoring dashboards bookmarked
@@ -1638,6 +1639,7 @@ flowchart TD
 - **Size memory pessimistically.** If you think you need 1 TB, plan for 1.5 TB.
 - **Cap time ranges by default.** Dashboards shouldn't pull a month of history per click.
 - **Treat schema changes like code deploys.** Review, stage, and schedule. The [non-blocking DDL myth](/blog/non-blocking-ddl-myth) applies doubly to distributed engines.
+- **Automate diagnostic bundle triage.** When nodes fail, don't waste hours untarring gigabyte logs on disk; use [bounded stream processing to parse 10GB diagnostic bundles locally](/blog/parsing-10gb-database-bundles-locally).
 - **Practice failovers regularly.** Don't wait for PagerDuty to be your rehearsal.
 
 ## Takeaway
@@ -1724,7 +1726,7 @@ flowchart LR
 
 Distributed execution is like choreography—elegant when aligned, chaotic when improvised.
 
-Once motion is under control, the next trap is thinking every column needs an index. [That's next.](/blog/indexes-everywhere-bad-strategy)
+Once motion is under control, the next trap is thinking every column needs an index: explore [why indexes everywhere is a bad strategy for distributed databases](/blog/indexes-everywhere-bad-strategy).
 
 ---
 
@@ -1768,7 +1770,7 @@ We had a write-heavy analytics table with 30 indexes. Each new feature added "ju
 
 After trimming to three high-value indexes, write throughput quadrupled and memory stabilized. The queries people actually ran were fine; the rest had been vanity.
 
-The lesson echoed [the memory-as-oxygen finding from Part 10](/blog/singlestore-production-lessons)—indexes were eating the working set we needed for ingest.
+The lesson echoed [the memory sizing realities from our SingleStore production lessons](/blog/singlestore-production-lessons)—indexes were eating the working set we needed for ingest.
 
 \`\`\`mermaid
 graph TD
@@ -1797,7 +1799,7 @@ graph TD
 
 Indexes are guardrails, not decorations. Use fewer, smarter, intentional ones.
 
-And before blaming the database for your next slow query, consider: [your database is probably fine](/blog/your-database-is-probably-fine).
+And before blaming the database for your next slow query, consider our operational diagnosis: [your database is probably fine and queries need boundaries](/blog/your-database-is-probably-fine).
 
 ---
 
@@ -1829,7 +1831,7 @@ At 3 a.m., PagerDuty goes off. "Database latency high." You SSH in, stare at das
 
 The database wasn't slow—it was obedient.
 
-This is the operational companion to [the indexes post](/blog/indexes-everywhere-bad-strategy) and [the incident response playbook](/blog/incident-response-database-engineers). Both converge on the same point: most "database problems" are application problems wearing a database costume.
+This is the operational companion to our analysis of [why over-indexing degrades performance](/blog/indexes-everywhere-bad-strategy) and our [incident response playbook for database engineers](/blog/incident-response-database-engineers). Both converge on the same point: most "database problems" are application problems wearing a database costume.
 
 ## TL;DR
 
@@ -1841,7 +1843,7 @@ In one incident, a marketing report query scanned an entire columnstore to calcu
 
 Adding a simple \`WHERE date > NOW() - INTERVAL 7 DAY\` dropped runtime from minutes to milliseconds.
 
-No new hardware. No config tuning. Just a time bound. This is the exact scenario [Part 10 warned about](/blog/singlestore-production-lessons) with unbounded dashboard queries.
+No new hardware. No config tuning. Just a time bound. This is the exact scenario [warned about in our SingleStore production lessons](/blog/singlestore-production-lessons) with unbounded dashboard queries.
 
 \`\`\`mermaid
 flowchart TD
@@ -1868,7 +1870,7 @@ flowchart TD
 
 Your database is probably fine. Your queries, on the other hand, need boundaries.
 
-And if you're still convinced the answer is "more nodes," read the next post first: [when vertical scaling beats horizontal](/blog/vertical-beats-horizontal-scaling).
+And if you're still convinced the answer is "more nodes," read our architectural breakdown on [when vertical scaling beats horizontal architecture](/blog/vertical-beats-horizontal-scaling).
 
 ---
 

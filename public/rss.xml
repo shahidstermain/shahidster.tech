@@ -5,7 +5,7 @@
     <link>https://shahidster.tech</link>
     <description>Deep dives into distributed databases, query optimization, and production infrastructure.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 28 Oct 2026 01:31:02 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 01:59:03 GMT</lastBuildDate>
     <atom:link href="https://shahidster.tech/rss.xml" rel="self" type="application/rss+xml"/>
     <item>
       <title>Out-of-Memory No More: Parsing 10GB Database Diagnostic Bundles Locally</title>

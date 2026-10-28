@@ -100,6 +100,27 @@ function buildFaqJsonLd() {
   };
 }
 
+function buildBreadcrumbJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: COURSE_META.name,
+        item: COURSE_META.url,
+      },
+    ],
+  };
+}
+
 export default function Course() {
   useEffect(() => {
     const title = `${COURSE_META.name}: ${COURSE_META.tagline} | ${COURSE_META.author}`;
@@ -147,6 +168,7 @@ export default function Course() {
       { key: "course", data: buildCourseJsonLd() },
       { key: "product", data: buildProductJsonLd() },
       { key: "faq", data: buildFaqJsonLd() },
+      { key: "breadcrumb", data: buildBreadcrumbJsonLd() },
     ];
     const created: HTMLScriptElement[] = [];
     for (const { key, data } of scripts) {

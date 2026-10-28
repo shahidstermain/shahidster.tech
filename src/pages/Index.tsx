@@ -21,22 +21,45 @@ const Index = () => {
 
     const jsonLd = {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Shahid Moosa",
-      "url": "https://shahidster.tech",
-      "jobTitle": "Cloud Database Support Engineer",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "SingleStore",
-        "url": "https://www.singlestore.com"
-      },
-      "sameAs": [
-        "https://github.com/shahidmoosa",
-        "https://linkedin.com/in/shahidmoosa",
-        "https://twitter.com/shahidster_"
-      ],
-      "description": "Distributed Systems Engineer specializing in cloud databases, high-scale query optimization, and reliable infrastructure.",
-      "image": "https://shahidster.tech/shahid-moosa.jpg"
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://shahidster.tech/#person",
+          "name": "Shahid Moosa",
+          "url": "https://shahidster.tech",
+          "jobTitle": "Cloud Database Support Engineer",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "SingleStore",
+            "url": "https://www.singlestore.com"
+          },
+          "sameAs": [
+            "https://github.com/shahidmoosa",
+            "https://linkedin.com/in/shahidmoosa",
+            "https://twitter.com/shahidster_"
+          ],
+          "description": "Distributed Systems Engineer specializing in cloud databases, high-scale query optimization, and reliable infrastructure.",
+          "image": "https://shahidster.tech/shahid-moosa.jpg"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://shahidster.tech/#website",
+          "url": "https://shahidster.tech",
+          "name": "Shahid Moosa — Distributed Systems Engineering",
+          "description": "Deep dives into distributed databases, query optimization, and production infrastructure.",
+          "publisher": {
+            "@id": "https://shahidster.tech/#person"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://shahidster.tech/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
     };
 
     const script = document.createElement('script');

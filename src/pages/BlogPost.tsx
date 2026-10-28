@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Clock, Calendar, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Calendar, BookOpen, ListTree } from "lucide-react";
 import { getArticleBySlug, articles, Article } from "@/data/articles";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -241,6 +241,7 @@ type GatingState =
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const article = slug ? getArticleBySlug(slug) : undefined;
   const { isSubscribed, session } = useAuth();
   const { prev, next, currentIndex, total } = article
@@ -289,6 +290,35 @@ export default function BlogPost() {
     () => (visibleContent ? splitMermaidSegments(visibleContent) : []),
     [visibleContent]
   );
+
+  const tableOfContents = useMemo(() => {
+    if (!visibleContent) return [];
+    const lines = visibleContent.split("\n");
+    const items: { id: string; text: string }[] = [];
+    for (const line of lines) {
+      const match = line.match(/^## (.+)$/);
+      if (match) {
+        const text = match[1].trim();
+        items.push({ id: slugifyHeading(text), text });
+      }
+    }
+    return items;
+  }, [visibleContent]);
+
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = (e.target as HTMLElement).closest("a");
+    if (!target) return;
+    const href = target.getAttribute("href");
+    if (!href) return;
+    if (href.startsWith("#")) {
+      return;
+    }
+    if (href.startsWith("/blog/")) {
+      e.preventDefault();
+      navigate(href);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   // Inject JSON-LD structured data and meta tags into head
   useEffect(() => {
@@ -482,6 +512,37 @@ export default function BlogPost() {
             </div>
           </motion.header>
 
+          {/* Table of Contents */}
+          {tableOfContents.length > 1 && (
+            <motion.nav
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              aria-label="Table of contents"
+              className="mb-10 p-5 rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm"
+            >
+              <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-primary">
+                <ListTree className="w-4 h-4" />
+                <span>On this page</span>
+              </div>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                {tableOfContents.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 group py-0.5"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-border group-hover:bg-primary transition-colors shrink-0" />
+                      <span className="truncate group-hover:translate-x-0.5 transition-transform">
+                        {item.text}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.nav>
+          )}
+
           {/* Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -519,6 +580,7 @@ export default function BlogPost() {
                 ) : (
                   <div
                     key={`t-${idx}`}
+                    onClick={handleContentClick}
                     dangerouslySetInnerHTML={{ __html: formatContent(segment.value) }}
                   />
                 )
@@ -640,42 +702,104 @@ export default function BlogPost() {
   );
 }
 
-// Simple markdown-like formatting
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/<[^>]*>/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+// Markdown formatting with syntax isolation, links, images, and anchor-linked headers
 function formatContent(content: string): string {
-  return content
-    // Headers
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    // Bold
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Inline code
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    // Code blocks
-    .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-    // Tables (basic support)
-    .replace(/\|(.+)\|/g, (match) => {
-      const cells = match.split('|').filter(c => c.trim());
-      if (cells.every(c => /^[-:]+$/.test(c.trim()))) {
-        return ''; // Skip separator row
-      }
-      const isHeader = match.includes('---');
-      const tag = isHeader ? 'th' : 'td';
-      return `<tr>${cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('')}</tr>`;
+  // 1. Isolate code blocks
+  const codeBlocks: string[] = [];
+  let processed = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (_match, lang, code) => {
+    const idx = codeBlocks.length;
+    const langAttr = lang ? ` class="language-${lang}"` : "";
+    codeBlocks.push(`<pre><code${langAttr}>${escapeHtml(code)}</code></pre>`);
+    return `__CODE_BLOCK_${idx}__`;
+  });
+
+  // 2. Isolate inline code
+  const inlineCodes: string[] = [];
+  processed = processed.replace(/`([^`]+)`/g, (_match, code) => {
+    const idx = inlineCodes.length;
+    inlineCodes.push(`<code>${escapeHtml(code)}</code>`);
+    return `__INLINE_CODE_${idx}__`;
+  });
+
+  // 3. Images: ![alt](url)
+  processed = processed.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_match, alt, url) => {
+    return `<figure class="my-8"><img src="${url}" alt="${alt}" class="rounded-xl border border-border/50 max-w-full h-auto mx-auto shadow-md" loading="lazy" />${alt ? `<figcaption class="text-xs text-center text-muted-foreground mt-2">${alt}</figcaption>` : ""}</figure>`;
+  });
+
+  // 4. Links: [text](url)
+  processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text, url) => {
+    const isExternal = /^https?:\/\//i.test(url) && !url.includes("shahidster.tech");
+    const target = isExternal ? ' target="_blank" rel="noopener noreferrer"' : "";
+    return `<a href="${url}"${target}>${text}</a>`;
+  });
+
+  // 5. Headers with anchor links and scroll margin
+  processed = processed
+    .replace(/^### (.+)$/gm, (_match, heading) => {
+      const id = slugifyHeading(heading);
+      return `<h3 id="${id}" class="group scroll-mt-24"><a href="#${id}" class="no-underline text-foreground hover:text-primary transition-colors inline-flex items-center gap-2">${heading}<span class="opacity-0 group-hover:opacity-100 text-primary/60 text-base transition-opacity">#</span></a></h3>`;
     })
-    // Wrap tables
-    .replace(/(<tr>.*<\/tr>\n?)+/g, '<table><tbody>$&</tbody></table>')
-    // Horizontal rules
-    .replace(/^---$/gm, '<hr />')
-    // Blockquotes
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    // Lists
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
-    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    // Paragraphs
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[hpuoltb])(.+)$/gm, '<p>$1</p>')
-    // Clean up empty paragraphs
-    .replace(/<p><\/p>/g, '')
-    .replace(/<p>\s*<\/p>/g, '');
+    .replace(/^## (.+)$/gm, (_match, heading) => {
+      const id = slugifyHeading(heading);
+      return `<h2 id="${id}" class="group scroll-mt-24"><a href="#${id}" class="no-underline text-foreground hover:text-primary transition-colors inline-flex items-center gap-2">${heading}<span class="opacity-0 group-hover:opacity-100 text-primary/60 text-base transition-opacity">#</span></a></h2>`;
+    });
+
+  // 6. Bold
+  processed = processed.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+
+  // 7. Tables (basic support)
+  processed = processed
+    .replace(/\|(.+)\|/g, (match) => {
+      const cells = match.split("|").filter((c) => c.trim());
+      if (cells.every((c) => /^[-:]+$/.test(c.trim()))) {
+        return ""; // Skip separator row
+      }
+      const isHeader = match.includes("---");
+      const tag = isHeader ? "th" : "td";
+      return `<tr>${cells.map((c) => `<${tag}>${c.trim()}</${tag}>`).join("")}</tr>`;
+    })
+    .replace(/(<tr>.*<\/tr>\n?)+/g, "<table><tbody>$&</tbody></table>");
+
+  // 8. Horizontal rules
+  processed = processed.replace(/^---$/gm, "<hr />");
+
+  // 9. Blockquotes
+  processed = processed.replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>");
+
+  // 10. Lists
+  processed = processed
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
+    .replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>")
+    .replace(/^\d+\. (.+)$/gm, "<li>$1</li>");
+
+  // 11. Paragraphs (wrap non-HTML lines)
+  processed = processed
+    .replace(/\n\n/g, "</p><p>")
+    .replace(/^(?!<[a-z/]|__CODE_BLOCK_)(.+)$/gim, "<p>$1</p>")
+    .replace(/<p><\/p>/g, "")
+    .replace(/<p>\s*<\/p>/g, "");
+
+  // 12. Restore isolated inline code
+  processed = processed.replace(/__INLINE_CODE_(\d+)__/g, (_m, idx) => inlineCodes[Number(idx)] || "");
+
+  // 13. Restore isolated code blocks
+  processed = processed.replace(/__CODE_BLOCK_(\d+)__/g, (_m, idx) => codeBlocks[Number(idx)] || "");
+
+  return processed;
 }
