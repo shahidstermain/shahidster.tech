@@ -8,6 +8,156 @@ export interface Article extends ArticleSummary {
 
 export const articles: Article[] = [
   {
+    slug: "sb-sniffer-supabase-postgres-diagnostic-engine",
+    title: "Introducing SB-Sniffer: Automating Supabase & PostgreSQL Diagnostics Locally",
+    description: "How I built SB-Sniffer (Supabase Sniffer)—a local-first diagnostic and health engine for catching RLS bottlenecks, Supavisor pooler leaks, slow queries, and silent Postgres anti-patterns before they trigger 504 outages.",
+    category: "Systems Engineering",
+    readTime: "9 min read",
+    date: "Nov 2026",
+    featured: true,
+    seoKeywords: ["SB-Sniffer", "Supabase Sniffer", "Supabase", "PostgreSQL", "Row Level Security", "Supavisor", "pg_stat_statements", "database diagnostics", "query performance"],
+    content: `
+## Why I Built SB-Sniffer
+
+If you have spent time troubleshooting production PostgreSQL or Supabase incidents—whether as a cloud database support engineer, an SRE, or a backend founder—you start seeing the exact same failure patterns repeat across completely different applications.
+
+A team launches on Supabase, ships quickly with Row Level Security (RLS) and serverless API routes, and everything feels instantaneous in staging. Three weeks later, once a core table crosses 50,000 rows or traffic spikes, the symptoms hit all at once:
+
+- API calls start returning **504 Gateway Timeout** even though the SQL looks simple.
+- Serverless workers exhaust database slots with \`FATAL: sorry, too many clients already\`.
+- Prisma or Drizzle throws \`ERROR: prepared statement "s1" already exists\` under Supavisor Transaction Mode.
+- User signups silently fail with \`Database error saving new user\` because of an unhandled trigger exception.
+- PostgREST queries unexpectedly return an empty array \`[]\` when rows clearly exist in the Table Editor.
+
+Normally, diagnosing all of this requires jumping between five different places: running ad-hoc queries against \`pg_stat_statements\`, inspecting \`pg_stat_activity\`, auditing RLS expressions table by table, grepping GoTrue/PostgREST/Supavisor logs, and cross-referencing documentation. Just as I built S2 Report Sniffer for [parsing 10GB distributed database bundles locally](/blog/parsing-10gb-database-bundles-locally), I wanted a dedicated, local-first diagnostic engine tailored specifically to the **Supabase and PostgreSQL** stack.
+
+That tool is **SB-Sniffer** (branded in the UI as **Supabase Sniffer v1.0 — Diagnostic & Health Engine**), built as both a Web GUI and a Terminal CLI (\`sb-sniffer\`).
+
+![SB-Sniffer Diagnostic & Health Engine dashboard showing overall score, severity breakdown, and nine scored health categories](/blog-images/sb-sniffer-dashboard.png)
+
+---
+
+## How SB-Sniffer Works Under the Hood
+
+SB-Sniffer evaluates a Supabase/PostgreSQL environment across **nine operational health categories** and rolls them up into an instant **0–100 Health Score** and letter grade (**A–F**):
+
+1. **RLS & Policies** — Unwrapped \`auth.uid()\` / \`auth.jwt()\` / \`auth.email()\` calls, redundant permissive \`SELECT\` policies, public tables with RLS disabled, and tables with RLS enabled but zero policies.
+2. **Connection Pooler (Supavisor)** — Port \`6543\` vs \`5432\` mismatches, active prepared statement collisions in Transaction Mode, pool utilization saturation, client pool sprawl, and stuck \`idle in transaction\` sessions.
+3. **Auth (GoTrue)** — Fragile triggers on \`auth.users\` making synchronous HTTP requests or missing \`EXCEPTION\` blocks that roll back user signups.
+4. **Storage** — Missing RLS policies on \`storage.objects\` and orphaned storage references pointing to deleted buckets.
+5. **Realtime & WAL** — Tables in the \`supabase_realtime\` publication missing \`REPLICA IDENTITY FULL\`, causing \`payload.old\` to drop previous column values on updates and deletes.
+6. **Query Latency** — Slow queries in \`pg_stat_statements\`, severe shared buffer cache misses, and deep \`OFFSET\` pagination scans.
+7. **Schema Hygiene** — Extensions (\`uuid-ossp\`, \`pgcrypto\`) installed in \`public\`, dead-tuple table bloat, and unused indexes burning write IOPS.
+8. **App Code & Env** — Client driver and serverless configuration checks.
+9. **Egress & Cost** — High sequential-scan tuple reads and uncached public storage buckets driving unnecessary compute and egress bills.
+
+\`\`\`mermaid
+flowchart LR
+    A["Live DB Audit (Postgres + Realtime)"] --> E["SB-Sniffer Diagnostic Engine"]
+    B["Analyze My Dump (Studio JSON / pg_dump / pg_stat_statements)"] --> E
+    C["Live & Historical Logs (sb-sniffer serve / Log Upload)"] --> E
+    E --> F["0-100 Health Score & 9 Category Bars"]
+    E --> G["Pattern Detector & Root-Cause Findings"]
+    E --> H["1-Click Fix SQL, Markdown Report & AI Prompt Export"]
+\`\`\`
+
+---
+
+## Five Ways SB-Sniffer Helps You Debug Faster
+
+### 1. Instant Support-Context Diagnostics & One-Click Remediation SQL
+
+Most linters tell you **what** failed, then leave you to figure out **why** it matters and **how** to rewrite the SQL safely. Every finding card in SB-Sniffer is structured like a senior support engineer's postmortem:
+
+- **Why This Clogs the Supabase Support Queue**: Explains the exact production mechanism—for example, why calling \`auth.uid()\` directly inside an RLS policy forces PostgreSQL to invoke the PL/pgSQL function on every candidate row in a sequential scan instead of caching it once per query via an \`initPlan\`.
+- **Affected Database Objects**: Lists the exact tables, policies, indexes, or client connections flagged by the rule.
+- **Recommended Remediation & Copyable SQL**: Provides ready-to-run \`ALTER POLICY\`, \`CREATE INDEX\`, \`ALTER TABLE ... ENABLE ROW LEVEL SECURITY\`, or \`pg_terminate_backend\` statements with a **Copy SQL** button.
+
+![Expanded Critical Finding card in SB-Sniffer showing Support Queue context, Affected Database Objects, and one-click Remediation SQL](/blog-images/sb-sniffer-finding-remediation.png)
+
+For example, when SB-Sniffer flags unwrapped auth helpers in \`Broken Acme SaaS\` (the built-in **Sample Demo App** sandbox that ships with 11 realistic production failure modes), it generates the exact \`initPlan\` rewrite:
+
+\`\`\`sql
+-- Wrap auth.uid() in a scalar subselect so Postgres evaluates it once per query
+ALTER POLICY "Users can read own profile" ON "public"."profiles"
+  USING ((select auth.uid()) = id);
+\`\`\`
+
+And if you want to batch-apply schema fixes, the **Fix SQL** button in the top bar compiles all automated remediations into a single downloadable \`supabase-remediation-<timestamp>.sql\` migration script.
+
+---
+
+### 2. Zero-Credential Offline Auditing ("Analyze My Dump")
+
+One of the biggest friction points when helping another team debug a production database—or auditing a locked-down VPC—is credential access. Nobody wants to hand out production \`postgres\` passwords just to get a health check.
+
+SB-Sniffer solves this with **Analyze My Dump**, a **100% client-side** analyzer that runs entirely in your browser without sending credentials anywhere. It supports three input formats via paste or file upload (\`.sql\`, \`.json\`, \`.csv\`):
+
+- **Studio Introspection JSON**: Click **Studio SQL** in the header to copy SB-Sniffer's read-only introspection query, run it inside the Supabase Dashboard SQL Editor, and paste the JSON output right back into SB-Sniffer.
+- **pg_dump Schema SQL**: Drop in a \`pg_dump --schema-only\` dump to audit RLS coverage, policy expressions, missing foreign-key indexes, and schema hygiene offline.
+- **pg_stat_statements**: Paste CSV or JSON exports (\`query\`, \`calls\`, \`total_exec_time\`, \`mean_exec_time\`, \`rows\`, \`shared_blks_hit\`, \`shared_blks_read\`) to detect latency outliers and buffer pool thrashing.
+
+![100% Client-Side Health Analysis view in SB-Sniffer accepting Studio Introspection JSON, pg_dump Schema SQL, and pg_stat_statements](/blog-images/sb-sniffer-analyze-dump.png)
+
+---
+
+### 3. Deep Postgres Telemetry Explorer
+
+When a database feels sluggish, the culprit usually lives inside Postgres's internal stats views. SB-Sniffer's **Postgres Telemetry** tab brings four essential views into one filterable workspace:
+
+- **Statements (\`pg_stat_statements\`)**: Sort queries by **Mean Latency**, **Total Time**, **Call Count**, or **Cache Misses**. Each query surfaces its **Buffer Hit** ratio (spotting 1–2% cache hit rates immediately) and gives you a **Copy EXPLAIN ANALYZE** button so you can verify execution plans without retyping parameters.
+- **Activity (\`pg_stat_activity\`)**: Inspect live PIDs, \`application_name\` (such as \`nextjs-serverless-worker\`), user roles, wait events (\`ClientRead\`, \`DataFileRead\`), query durations, and \`idle in transaction\` leaks—complete with a **Kill Session** control for runaway transactions.
+- **Table Bloat**: Tracks live rows vs. dead tuples, bloat percentages (e.g., \`23.3%\` bloat with \`42,000\` dead tuples), sequential-scan-heavy tables lacking indexes, table sizes, and \`Last Autovacuum\` timestamps.
+- **Index Usage (\`pg_stat_user_indexes\`)**: Flags \`0\`-scan unused indexes consuming disk and write IOPS (the exact anti-pattern covered in [why indexes everywhere is a bad strategy](/blog/indexes-everywhere-bad-strategy)), with a **Copy Drop SQL** shortcut using \`DROP INDEX CONCURRENTLY\`.
+
+![SB-Sniffer Postgres Telemetry Explorer showing slow queries from pg_stat_statements, buffer cache hit percentages, and EXPLAIN ANALYZE helpers](/blog-images/sb-sniffer-postgres-telemetry.png)
+
+---
+
+### 4. Multi-Service Log Correlation & Pattern Detection
+
+During an outage, symptoms rarely stay inside one log stream. A slow RLS sequential scan in **Postgres** shows up as a \`504 Gateway Timeout\` in **PostgREST**, while a failing \`auth.users\` trigger surfaces in **GoTrue Auth**, and a Prisma pooler bug appears in **Supavisor**.
+
+The **Live & Historical Logs** checker aggregates logs across all five core services—**Postgres Database**, **GoTrue Auth**, **Supavisor Pooler**, **Storage API**, and **PostgREST API**—with regex search, service/severity/time-window filters, live tailing (via \`sb-sniffer serve\`), log file uploads, and filtered exports.
+
+Best of all, its built-in **Pattern Detector** evaluates **10 active incident rules** across the stream and tags matching events inline with badges such as:
+
+- \`RLS UNWRAPPED AUTH FUNC\`
+- \`POOLER PORT AND PREPARED STMT MISMATCH\`
+- \`AUTH USERS BLOCKING TRIGGERS\`
+- \`STORAGE ORPHANED OBJECTS AND POLICIES\`
+
+Instead of manually correlating timestamps across five browser tabs during a Sev-1 bridge—a core principle in our [database incident response playbook](/blog/incident-response-database-engineers)—the log viewer highlights the exact root-cause chain automatically.
+
+![SB-Sniffer Live & Historical Log Checker aggregating Postgres, Supavisor, GoTrue, Storage, and PostgREST logs with inline Pattern Detector tags](/blog-images/sb-sniffer-live-logs.png)
+
+---
+
+### 5. Built-In Exports for Humans and AI Coding Assistants
+
+Once you finish an audit, SB-Sniffer makes sharing or acting on the findings effortless:
+
+- **Export Report**: Downloads a complete Markdown health report (\`supabase-health-report-<timestamp>.md\`) containing the score, severity distribution, affected objects, and remediation SQL—ready to attach to a GitHub issue, PR, or postmortem.
+- **Export for AI / Copy for AI**: Formats the full architectural context, schema findings, and remediation guidance into an LLM-ready prompt (\`supabase-ai-export-<timestamp>.md\` or direct clipboard copy) so you can paste your exact database bottlenecks straight into Claude or ChatGPT to refactor your application queries and migrations.
+- **Sample Demo App**: Lets anyone click **Sample Demo App** (\`Broken Acme SaaS\`) to explore all 11 findings, telemetry tables, and simulated incident logs locally with zero setup.
+
+---
+
+## Real-World Checklist: When to Run SB-Sniffer
+
+In practice, SB-Sniffer earns its keep in four moments:
+
+| Scenario | Recommended Mode | What You Catch Immediately |
+|---|---|---|
+| **Pre-Launch Production Readiness** | Live DB Audit or \`pg_dump\` | Public tables missing RLS, unwrapped \`auth.uid()\`, missing FK indexes |
+| **Sudden 504s or CPU Spikes** | Postgres Telemetry + Live Logs | Per-row RLS scans, \`1–2%\` buffer cache hits, deep \`OFFSET\` pagination |
+| **Serverless Connection Errors** | Live DB Audit + Activity Tab | Port \`6543\` prepared statement errors, pool sprawl, \`idle in transaction\` locks |
+| **Client/Customer Escalations** | Analyze My Dump (Studio JSON) | Full schema & query audit without asking for database credentials |
+
+Most outages blamed on "the database being slow" are really [query-shape and configuration problems in disguise](/blog/your-database-is-probably-fine). Having a deterministic diagnostic engine that surfaces unwrapped RLS functions, pooler mismatches, table bloat, and missing indexes in under ten seconds turns hours of guesswork into a repeatable, verifiable fix.
+`
+  },
+  {
     slug: "parsing-10gb-database-bundles-locally",
     title: "Out-of-Memory No More: Parsing 10GB Database Diagnostic Bundles Locally",
     description: "How I built S2 Report Sniffer's bounded-memory stream processing engine to ingest massive distributed database logs without crashing.",

@@ -111,7 +111,7 @@ export const Writing = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search all 15 articles by topic (e.g. SingleStore, CAP, OOM, Latency, Sharding)..."
+            placeholder={`Search all ${visibleArticles.length} articles by topic (e.g. Supabase, SingleStore, CAP, OOM, Latency)...`}
             className="w-full pl-10 pr-4 py-3 rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
           />
         </div>

@@ -12,6 +12,26 @@ export interface ArticleSummary {
 
 export const articleSummaries: ArticleSummary[] = [
   {
+    "slug": "sb-sniffer-supabase-postgres-diagnostic-engine",
+    "title": "Introducing SB-Sniffer: Automating Supabase & PostgreSQL Diagnostics Locally",
+    "description": "How I built SB-Sniffer (Supabase Sniffer)—a local-first diagnostic and health engine for catching RLS bottlenecks, Supavisor pooler leaks, slow queries, and silent Postgres anti-patterns before they trigger 504 outages.",
+    "category": "Systems Engineering",
+    "readTime": "9 min read",
+    "date": "Nov 2026",
+    "featured": true,
+    "seoKeywords": [
+      "SB-Sniffer",
+      "Supabase Sniffer",
+      "Supabase",
+      "PostgreSQL",
+      "Row Level Security",
+      "Supavisor",
+      "pg_stat_statements",
+      "database diagnostics",
+      "query performance"
+    ]
+  },
+  {
     "slug": "parsing-10gb-database-bundles-locally",
     "title": "Out-of-Memory No More: Parsing 10GB Database Diagnostic Bundles Locally",
     "description": "How I built S2 Report Sniffer's bounded-memory stream processing engine to ingest massive distributed database logs without crashing.",
